@@ -4,8 +4,12 @@ import { requireRole } from "@/features/auth";
 import { ok, created, badRequest, serverError, unauthorized } from "@/features/news/api";
 import { writeFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
+import { rateLimitMiddleware } from "@/lib/rate-limit";
 
 export async function GET(request: NextRequest) {
+  const rateLimitResponse = await rateLimitMiddleware({ max: 60, windowMs: 60_000 }, "media")(request);
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search");
@@ -33,6 +37,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const rateLimitResponse = await rateLimitMiddleware({ max: 10, windowMs: 60_000 }, "media")(request);
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     const user = await requireRole("EDITOR");
     if (!user) return unauthorized();

@@ -1,6 +1,6 @@
 {
-  "version": "1.1.0",
-  "phase": "GEOGRAPHIC_LAYER",
+  "version": "1.2.0",
+  "phase": "PRODUCTION_READINESS",
   "completed_modules": [
     "PROJECT_FOUNDATION",
     "TECHNICAL_SCAFFOLD",
@@ -33,10 +33,20 @@
     "KPI_DASHBOARD",
     "PRODUCTION_READINESS_REPORT",
     "GIT_RELEASE_V1_BETA",
-    "GEOGRAPHIC_LAYER"
+    "STRATEGIC_REBRAND",
+    "GEOGRAPHIC_LAYER",
+    "RATE_LIMITING",
+    "HEALTH_ENDPOINT",
+    "BACKUP_SCRIPT",
+    "ENV_VALIDATION",
+    "ERROR_HANDLER_UNIFIED",
+    "SECURITY_DOCS_UPDATE",
+    "OPENGRAPH_TWITTER_CARDS",
+    "RSS_NAME_FIX",
+    "PERFORMANCE_REVIEW_REPORT"
   ],
-  "pending_modules": ["SUPABASE_STORAGE", "RATE_LIMITING", "PUBLIC_DIRECTORY_ADS_FRONTEND"],
-  "last_updated": "2026-06-22T23:30:00.000Z",
+  "pending_modules": ["SUPABASE_STORAGE", "PUBLIC_DIRECTORY_ADS_FRONTEND", "E2E_TESTS"],
+  "last_updated": "2026-06-22T23:58:00.000Z",
   "database_status": "HEALTHY",
   "build_status": "✅ Passing (44s, TypeScript clean, 36 routes)",
   "tech_stack": {
@@ -48,7 +58,7 @@
     "css": "TailwindCSS",
     "ui": "shadcn/ui",
     "storage": "Local filesystem (public/uploads/)",
-    "hosting": "Vercel"
+    "hosting": "HostingGuru"
   },
   "brand": {
     "name_ar": "الصوت المحلي",
@@ -70,40 +80,30 @@
     }
   },
   "coverage_areas": [
-    "ولاية تيارت", "ولاية تيسمسيلت", "دائرة قصر الشلالة",
-    "دائرة السوقر", "دائرة فرندة", "دائرة عين كرمس",
-    "دائرة مهدية", "دائرة دحموني", "دائرة مشرع الصفا"
+    "ولاية تيارت",
+    "ولاية منتدبة قصر الشلالة",
+    "دائرة السوقر",
+    "دائرة فرندة",
+    "دائرة عين كرمس",
+    "دائرة مهدية",
+    "دائرة دحموني",
+    "دائرة مشرع الصفا"
   ],
-  "sprint_1_7_progress": {
-    "api_route_protection": "✅ All API routes protected with RBAC",
-    "dashboard_analytics": "✅ Stat cards, bar charts, editorial pipeline",
-    "media_library": "✅ Upload, gallery, copy URL, delete",
-    "search_engine": "✅ /search page + /api/news/search (full-text)",
-    "economic_directory": "✅ Prisma model, feature, API CRUD, admin page",
-    "ads_manager": "✅ Prisma model, feature, API CRUD, admin page",
-    "reporter_workspace": "✅ /admin/workspace — streamlined reporter view",
-    "audit_dashboard": "✅ /admin/audit — full log viewer",
-    "seo": "✅ sitemap.xml, rss.xml, robots.txt",
-    "route_group_security": "✅ (admin) group now protected with auth check"
-  },
-  "sprint_1_8_progress": {
-    "security_audit": "✅ Full API/upload/RBAC audit with recommendations (reports/security_audit_report.md)",
-    "error_monitoring": "✅ logger.ts, error.tsx, global-error.tsx, not-found.tsx",
-    "backup_strategy": "✅ docs/backup_strategy.md with pg_dump, media backup, 30-day rotation, restore test",
-    "editorial_ops_handbook": "✅ docs/editorial_operations.md with workflows, pipeline, crisis protocol",
-    "kpi_dashboard": "✅ 12 stat cards in /admin (added reporters, ads, directory counts)",
-    "production_readiness": "✅ reports/production_readiness_report.md — 76% overall (6/9 pass)",
-    "git_release": "✅ v1.0.0-beta tagged and pushed to GitHub",
-    "strategic_rebrand": "✅ Full brand identity + expansion strategy documented across all docs"
-  },
   "sprint_1_9_progress": {
-    "wilaya_daira_commune_model": "✅ 3 Prisma models (Wilaya, Daira, Commune) with relations to News/Directory/Ads/User",
-    "migration": "✅ Migration applied — 14 Prisma models total",
-    "seed_data": "✅ Wilaya de Tiaret (code 14): 14 dairas, 34 communes seeded",
-    "repository": "✅ geographicRepository with getWilayas/getDairasByWilaya/getCommunesByDaira",
-    "api_routes": "✅ 16 API endpoints (CRUD + stats) with RBAC (ADMIN-only write)",
-    "admin_pages": "✅ /admin/wilayas, /admin/dairas, /admin/communes — full CRUD",
-    "dashboard": "✅ 3 new stat cards (wilayas, dairas, communes) in /admin",
-    "build": "✅ 36 routes, TypeScript clean"
+    "geographic_layer": "✅ Wilaya/Daira/Commune Prisma models, seed, API, admin CRUD, dashboard",
+    "ksar_chellala_fix": "✅ قصر الشلالة corrected to ولاية منتدبة (removed from Tiaret dairas)",
+    "rate_limiting": "✅ Applied to news, search, directory, ads, media, auth, geographic routes",
+    "health_endpoint": "✅ GET /api/health — DB, Prisma, Storage, App status",
+    "backup_script": "✅ scripts/backup-db.ts — pg_dump with 30-day rotation",
+    "env_validation": "✅ src/lib/env.ts — validateEnv() with required vars check",
+    "error_handler": "✅ src/lib/errors.ts — AppError, AuthError, ForbiddenError, NotFoundError, ValidationError, handlePrismaError",
+    "logger_audit": "✅ Added AUDIT level to src/lib/logger.ts",
+    "security_docs": "✅ docs/security.md rewritten for actual Next.js 16 + Prisma + Auth.js stack",
+    "opengraph_cards": "✅ Open Graph + Twitter Cards added to layout.tsx metadata",
+    "rss_name_fix": "✅ RSS site name fixed: صوت المحلة → الصوت المحلي",
+    "production_readiness": "✅ reports/production_readiness_report.md updated — 83% overall",
+    "security_audit": "✅ reports/security_audit_report.md updated — Rate Limiting marked ✅",
+    "performance_review": "✅ reports/performance_review_report.md created — 87% performance rating",
+    "build": "⏳ pending verification"
   }
 }

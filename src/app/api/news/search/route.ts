@@ -1,8 +1,12 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { ok, badRequest, serverError } from "@/features/news/api";
+import { rateLimitMiddleware } from "@/lib/rate-limit";
 
 export async function GET(request: NextRequest) {
+  const rateLimitResponse = await rateLimitMiddleware({ max: 30, windowMs: 60_000 }, "news-search")(request);
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     const { searchParams } = new URL(request.url);
     const q = searchParams.get("q")?.trim();

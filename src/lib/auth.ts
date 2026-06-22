@@ -16,6 +16,18 @@ declare module "next-auth" {
   }
 }
 
+interface ExtendedJWT {
+  role?: string;
+  id?: string;
+  name?: string;
+  email?: string;
+  picture?: string;
+  sub?: string;
+  iat?: number;
+  exp?: number;
+  jti?: string;
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
@@ -74,8 +86,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        (token as any).role = user.role;
-        (token as any).id = user.id;
+        (token as ExtendedJWT).role = user.role;
+        (token as ExtendedJWT).id = user.id;
       }
       return token;
     },

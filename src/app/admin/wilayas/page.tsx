@@ -25,7 +25,7 @@ export default function AdminWilayasPage() {
     finally { setLoading(false); }
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { load(); }, [load]); // eslint-disable-line react-hooks/set-state-in-effect
 
   function resetForm() { setForm({ name: "", slug: "", code: "", active: true }); setEditing(null); }
 

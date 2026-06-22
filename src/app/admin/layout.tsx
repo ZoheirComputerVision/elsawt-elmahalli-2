@@ -20,6 +20,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-300 hidden sm:block">{session.user.name}</span>
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a href="/api/auth/logout" className="text-xs text-gold hover:text-gold-light transition-colors">
               تسجيل الخروج
             </a>

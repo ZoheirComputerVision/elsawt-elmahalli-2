@@ -27,7 +27,7 @@ export default function AdminMediaPage() {
     } catch { /* ignore */ }
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { load(); }, [load]); // eslint-disable-line react-hooks/set-state-in-effect
 
   useEffect(() => {
     const timer = setTimeout(() => load(search), 300);

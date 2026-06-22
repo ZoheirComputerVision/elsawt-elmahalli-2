@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -17,6 +18,7 @@ export default async function AdminUsersPage() {
       <header className="bg-navy text-white">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <h1 className="text-lg font-bold">إدارة المستخدمين</h1>
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a
             href="/api/auth/logout"
             className="text-xs text-gold hover:text-gold-light transition-colors"
@@ -29,19 +31,19 @@ export default async function AdminUsersPage() {
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex gap-4">
-            <a href="/admin" className="text-sm text-navy hover:text-gold transition-colors">
+            <Link href="/admin" className="text-sm text-navy hover:text-gold transition-colors">
               الرئيسية
-            </a>
+            </Link>
             <span className="text-sm font-bold text-gold border-b-2 border-gold">
               المستخدمون
             </span>
           </div>
-          <a
+          <Link
             href="/admin/users/create"
             className="bg-gold hover:bg-gold-light text-navy text-sm font-bold px-4 py-2 rounded-lg transition-colors"
           >
             + مستخدم جديد
-          </a>
+          </Link>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">

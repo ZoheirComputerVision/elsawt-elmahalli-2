@@ -9,9 +9,26 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: "الصوت المحلي — منصة إعلامية جهوية",
-  description: "منصة إعلامية جهوية تغطي ولاية تيارت، ولاية تيسمسيلت، ودائرة قصر الشلالة",
+  title: {
+    default: "الصوت المحلي — منصة إعلامية جهوية",
+    template: "%s — الصوت المحلي",
+  },
+  description: "منصة إعلامية جهوية تغطي ولاية تيارت، ولاية تيسمسيلت، ومنطقة قصر الشلالة",
   keywords: ["تيارت", "تيسمسيلت", "قصر الشلالة", "أخبار", "الصوت المحلي"],
+  openGraph: {
+    type: "website",
+    locale: "ar_DZ",
+    siteName: "الصوت المحلي | The Local Echo",
+    title: "الصوت المحلي — منصة إعلامية جهوية",
+    description: "اهتمام محلي ... التزام وطني. منصة إعلامية جهوية تغطي تيارت، تيسمسيلت، وقصر الشلالة.",
+    url: "https://school-news-ai-209c.apps.hostingguru.io",
+  },
+  twitter: {
+    card: "summary",
+    title: "الصوت المحلي | The Local Echo",
+    description: "اهتمام محلي ... التزام وطني. منصة إعلامية جهوية تغطي تيارت، تيسمسيلت، وقصر الشلالة.",
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({

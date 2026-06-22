@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import type { NewsWithIncludes as News } from "@/features/news/types";
 
 function formatDate(d: Date | string | null | undefined) {

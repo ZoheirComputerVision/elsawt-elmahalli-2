@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { NewsWithIncludes as News } from "@/features/news/types";
 
 function timeAgo(d: Date | string | null | undefined) {
@@ -55,9 +56,9 @@ export default function HeadlinesSection({ news }: { news?: News[] }) {
         )}
       </div>
 
-      <a href="/news" className="inline-flex items-center gap-1 text-xs text-gold hover:text-navy font-semibold mt-3 transition-colors">
+      <Link href="/news" className="inline-flex items-center gap-1 text-xs text-gold hover:text-navy font-semibold mt-3 transition-colors">
         عرض جميع العناوين ←
-      </a>
+      </Link>
     </section>
   );
 }

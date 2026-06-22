@@ -68,7 +68,7 @@ export default function AdminDirectoryPage() {
     finally { setLoading(false); }
   }, [search, category]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { load(); }, [load]); // eslint-disable-line react-hooks/set-state-in-effect
 
   function resetForm() {
     setForm({ name: "", category: "", description: "", phone: "", email: "", website: "", address: "", city: "", province: "", status: "active", featured: false, contactName: "" });

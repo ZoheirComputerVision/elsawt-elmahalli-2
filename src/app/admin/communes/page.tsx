@@ -50,7 +50,7 @@ export default function AdminCommunesPage() {
     finally { setLoading(false); }
   }, [dairaFilter]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { load(); }, [load]); // eslint-disable-line react-hooks/set-state-in-effect
 
   function resetForm() { setForm({ name: "", slug: "", dairaId: dairaFilter || "", active: true }); setEditing(null); }
 

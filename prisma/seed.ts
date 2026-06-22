@@ -29,7 +29,6 @@ const wilayaTiaret: {
   { dairaName: "مشرع الصفا", communes: ["مشرع الصفا", "جيلالي بن عمار", "تيدة"] },
   { dairaName: "سيدي علي ملال", communes: ["سيدي علي ملال", "تيدسي", "سيدي بوزكري"] },
   { dairaName: "سبعين", communes: ["سبعين", "سيدي حسني"] },
-  { dairaName: "قصر الشلالة", communes: ["قصر الشلالة", "عصفور", "سطيحة"] },
   { dairaName: "زمالة الأمير عبد القادر", communes: ["زمالة الأمير عبد القادر"] },
   { dairaName: "عين كرمس", communes: ["عين كرمس", "مليانة", "النعيمة"] },
 ];
@@ -111,6 +110,16 @@ async function main() {
     console.log(`  ✓ ${item.title.substring(0, 40)}...`);
   }
 
+  // Cleanup: remove قصر الشلالة from Tiaret if it was incorrectly seeded as a daira earlier
+  const oldKsarDaira = await prisma.daira.findFirst({
+    where: { slug: "ksar-chellala", wilaya: { code: 14 } },
+  });
+  if (oldKsarDaira) {
+    await prisma.commune.deleteMany({ where: { dairaId: oldKsarDaira.id } });
+    await prisma.daira.delete({ where: { id: oldKsarDaira.id } });
+    console.log("  ✓ Removed قصر الشلالة from Tiaret (now a delegated wilaya)");
+  }
+
   console.log("🌱 Seeding Wilaya de Tiaret (code 14)...");
   const wilaya = await prisma.wilaya.upsert({
     where: { code: 14 },
@@ -137,6 +146,33 @@ async function main() {
       });
     }
     console.log(`    ↳ ${d.communes.length} بلدية`);
+  }
+
+  console.log("🌱 Seeding Wilaya de Ksar Chellala (ولاية منتدبة)...");
+  const wilayaKsar = await prisma.wilaya.upsert({
+    where: { slug: "ksar-chellala" },
+    update: {},
+    create: { name: "قصر الشلالة", slug: "ksar-chellala", code: 999, active: true },
+  });
+  console.log(`  ✓ ${wilayaKsar.name} (ولاية منتدبة)`);
+
+  const ksarDairas = [
+    { name: "قصر الشلالة", communes: ["قصر الشلالة", "عصفور", "سطايحة"] },
+  ];
+  for (const d of ksarDairas) {
+    const dairaSlug = toSlug(d.name);
+    const daira = await prisma.daira.upsert({
+      where: { wilayaId_slug: { wilayaId: wilayaKsar.id, slug: dairaSlug } },
+      update: {},
+      create: { name: d.name, slug: dairaSlug, wilayaId: wilayaKsar.id, active: true },
+    });
+    for (const c of d.communes) {
+      await prisma.commune.upsert({
+        where: { dairaId_slug: { dairaId: daira.id, slug: toSlug(c) } },
+        update: {},
+        create: { name: c, slug: toSlug(c), dairaId: daira.id, active: true },
+      });
+    }
   }
 
   console.log("🌱 Seeding admin user...");

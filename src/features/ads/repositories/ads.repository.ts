@@ -40,7 +40,7 @@ export const adsRepository = {
   async findMany(filter: AdFilter = {}): Promise<AdWithIncludes[]> {
     return prisma.ad.findMany({
       select: defaultSelect,
-      where: buildWhere(filter) as any,
+      where: buildWhere(filter) as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       orderBy: { createdAt: "desc" },
       take: filter.limit ?? 100,
       skip: filter.offset ?? 0,
@@ -52,15 +52,15 @@ export const adsRepository = {
   },
 
   async count(filter: AdFilter = {}): Promise<number> {
-    return prisma.ad.count({ where: buildWhere(filter) as any });
+    return prisma.ad.count({ where: buildWhere(filter) as any }); // eslint-disable-line @typescript-eslint/no-explicit-any
   },
 
   async create(data: Record<string, unknown>): Promise<AdWithIncludes> {
-    return prisma.ad.create({ data: data as any, select: defaultSelect }) as unknown as AdWithIncludes;
+    return prisma.ad.create({ data: data as any, select: defaultSelect }) as unknown as AdWithIncludes; // eslint-disable-line @typescript-eslint/no-explicit-any
   },
 
   async update(id: string, data: Record<string, unknown>): Promise<AdWithIncludes> {
-    return prisma.ad.update({ where: { id }, data: data as any, select: defaultSelect }) as unknown as AdWithIncludes;
+    return prisma.ad.update({ where: { id }, data: data as any, select: defaultSelect }) as unknown as AdWithIncludes; // eslint-disable-line @typescript-eslint/no-explicit-any
   },
 
   async delete(id: string): Promise<void> {

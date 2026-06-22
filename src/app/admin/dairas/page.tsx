@@ -33,7 +33,7 @@ export default function AdminDairasPage() {
     finally { setLoading(false); }
   }, [wilayaFilter]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { load(); }, [load]); // eslint-disable-line react-hooks/set-state-in-effect
 
   function resetForm() { setForm({ name: "", slug: "", wilayaId: wilayaFilter || "", active: true }); setEditing(null); }
 

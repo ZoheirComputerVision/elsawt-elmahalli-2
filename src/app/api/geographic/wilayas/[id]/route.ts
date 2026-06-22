@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { requireRole } from "@/features/auth";
 import { geographicRepository } from "@/features/geographic/repositories";
 import { prisma } from "@/lib/prisma";
-import { ok, badRequest, serverError, unauthorized, notFound } from "@/features/news/api";
+import { ok, serverError, unauthorized, notFound } from "@/features/news/api";
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {

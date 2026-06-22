@@ -1,50 +1,70 @@
 # الأمن — الصوت المحلي
 
 ## 1. المصادقة (Authentication)
-- **JWT tokens** مع expiry 24 ساعة
-- **bcrypt** لتشفير كلمات المرور
-- Admin: `ADMIN_USERNAME` + `ADMIN_PASSWORD` في `.env`
-- المستخدمون الثانويون: جدول `tenant_users` مع صلاحيات أدوار
+- **NextAuth.js (Auth.js)** مع استراتيجية JWT
+- **bcryptjs** لتشفير كلمات المرور
+- مزود الدخول: Credentials (بريد إلكتروني + كلمة مرور)
+- مدة الجلسة: 7 أيام
+- صفحة الدخول: `/login`
+- التوجيه بعد الدخول: `/admin`
 
 ## 2. التفويض (Authorization)
-- التسلسل الهرمي للأدوار: `author(1) < editor(2) < admin(3)`
-- `requireRole(role)` — يتحقق من أن دور المستخدم >= المستوى المطلوب
-- `requireTenantAccess()` — يتحقق من صلاحية الوصول للمنصة
+- التسلسل الهرمي للأدوار: `REPORTER(1) < EDITOR(2) < ADMIN(3)`
+- `requireRole(role)` — تتحقق من أن دور المستخدم >= المستوى المطلوب
+- جميع API Routes محمية بالأدوار (عدا المسارات العامة)
+- مسارات `/admin/*` محمية عبر `auth()` في `layout.tsx`
 
-## 3. CSRF
-- مطلوب لجميع الطرق الخطرة (POST/PUT/PATCH/DELETE)
-- الرأس: `X-CSRF-Token` = أول 20 حرفاً من JWT token
+## 3. قاعدة البيانات
+- **PostgreSQL** عبر Prisma ORM (يمنع SQL Injection)
+- 14 نموذجاً: User, News, Category, Region, Tag, NewsTag, DirectoryEntry, Ad, Media, AuditLog, Wilaya, Daira, Commune, Notification
+- جميع المفاتيح الخارجية مع `onDelete: Cascade` أو `SetNull`
+- الفهارس الفريدة لمنع التكرار
 
-## 4. تحديد المعدل (Rate Limiting)
-| المسار | الحد | النافذة |
-|--------|------|---------|
-| `/api/*` | 200 طلب | 15 دقيقة |
-| `/api/admin/*` | 100 طلب | 15 دقيقة |
-| `/api/admin/auth` | 10 محاولات | 15 دقيقة |
+## 4. تحديد المعدل (Rate Limiting) — مطبق ✅
 
-## 5. أمان HTTP
-- **Helmet**: إعدادات أمان افتراضية
-- **CORS**: مفعل لجميع الأصول
-- **Content-Type**: JSON فقط
-- **الرفع**: حد 5MB، أنواع MIME محدودة (JPEG/PNG/WebP)
+| المسار | الحد (GET) | الحد (POST/PUT/DELETE) | النافذة |
+|--------|-----------|----------------------|---------|
+| `/api/news/*` | 60 | 20 | 60 ثانية |
+| `/api/news/search` | 30 | — | 60 ثانية |
+| `/api/directory/*` | 60 | 20 | 60 ثانية |
+| `/api/ads/*` | 60 | 20 | 60 ثانية |
+| `/api/media/*` | 60 | 10 | 60 ثانية |
+| `/api/auth/logout` | — | 10 | 60 ثانية |
+| `/api/geographic/*` | 60 | 20 | 60 ثانية |
 
-## 6. سجل التدقيق (Audit)
-- جميع الإجراءات الإدارية تُسجل في `admin_actions`
-- جميع قرارات AI تُسجل في `ai_decision_log`
-- جميع المشاهدات تُسجل في `views`
+## 5. رفع الملفات
+- الأنواع المسموحة: JPG, JPEG, PNG, GIF, WebP, SVG
+- الحد الأقصى: 5 ميجابايت
+- تسمية آمنة: `Date.now()-random.ext`
+- المسار: `public/uploads/` (Supabase Storage قيد التطوير)
+- حذف الملفات المادية عند الحذف من قاعدة البيانات
 
-## 7. المتغيرات البيئية
+## 6. سجل التدقيق (Audit Log)
+- جميع عمليات CREATE/UPDATE/DELETE تُسجل في جدول `auditLog`
+- تسجيل كل عملية دخول للمستخدم
+- تسجيل العمليات على: الأخبار، الوسائط، الدليل، الإعلانات، الجغرافيا
+- يتضمن: userId, action, entity, entityId, details, timestamp
+
+## 7. المفاتيح والبيئات
 | المتغير | الوصف |
 |---------|-------|
-| `PORT` | منفذ الخادم |
-| `DB_TYPE` | `json` أو `sqlite` |
-| `JWT_SECRET` | مفتاح JWT السري |
-| `ADMIN_USERNAME` | اسم مستخدم المشرف |
-| `ADMIN_PASSWORD` | كلمة مرور المشرف (bcrypt) |
-| `FACEBOOK_ACCESS_TOKEN` | توكن Facebook API |
+| `DATABASE_URL` | اتصال PostgreSQL |
+| `AUTH_SECRET` | مفتاح JWT السري (NextAuth) |
+| `NEXTAUTH_URL` | رابط الموقع |
+| `SUPABASE_URL` | رابط Supabase (اختياري) |
+| `SUPABASE_ANON_KEY` | مفتاح Supabase (اختياري) |
 
-## 8. الممارسات المحظورة
-- ❌ تخزين كلمات المرور كنص صريح
+التحقق من المتغيرات البيئية في الإنتاج عبر `src/lib/env.ts`.
+
+## 8. معالجة الأخطاء
+- Error Boundary عام: `src/app/error.tsx` + `src/app/global-error.tsx`
+- معالج موحد: `src/lib/errors.ts` (AppError, AuthError, ForbiddenError, NotFoundError, ValidationError)
+- معالج أخطاء Prisma: `handlePrismaError()` (P2002, P2025, P2003)
+- مسار الصحة: `GET /api/health` (حالة قاعدة البيانات، Prisma، التخزين)
+
+## 9. الممارسات المحظورة
+- ❌ تخزين كلمات المرور كنص صريح (bcryptjs)
 - ❌ إظهار أخطاء debug في الإنتاج
 - ❌ رفع ملفات قابلة للتنفيذ
-- ❌ مشاركة JWT_SECRET في الكود
+- ❌ مشاركة AUTH_SECRET في الكود
+- ❌ استخدام eval() أو dynamic require()

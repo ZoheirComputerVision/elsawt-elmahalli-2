@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
 const BASE = "https://school-news-ai-209c.apps.hostingguru.io";
-const SITE_NAME = "صوت المحلة";
+const SITE_NAME = "الصوت المحلي";
 
 export async function GET() {
   const news = await prisma.news.findMany({

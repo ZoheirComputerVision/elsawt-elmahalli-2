@@ -1,4 +1,4 @@
-type LogLevel = "debug" | "info" | "warn" | "error";
+type LogLevel = "debug" | "info" | "warn" | "error" | "audit";
 
 interface LogEntry {
   level: LogLevel;
@@ -33,6 +33,9 @@ class Logger {
       case "warn":
         console.warn(prefix, message, data ?? "");
         break;
+      case "audit":
+        console.log(`[AUDIT]`, prefix, message, data ?? "");
+        break;
       case "debug":
         if (process.env.NODE_ENV !== "production") {
           console.debug(prefix, message, data ?? "");
@@ -57,6 +60,10 @@ class Logger {
 
   error(message: string, data?: unknown) {
     this.log("error", message, data);
+  }
+
+  audit(message: string, data?: unknown) {
+    this.log("audit", message, data);
   }
 
   child(ctx: Record<string, unknown>): Logger {

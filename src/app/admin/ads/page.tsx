@@ -45,7 +45,7 @@ export default function AdminAdsPage() {
     finally { setLoading(false); }
   }, [search]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { load(); }, [load]); // eslint-disable-line react-hooks/set-state-in-effect
 
   function resetForm() {
     setForm({ title: "", content: "", imageUrl: "", linkUrl: "", position: "sidebar", status: "active", startDate: "", endDate: "" });

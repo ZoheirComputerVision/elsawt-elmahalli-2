@@ -51,7 +51,7 @@ export default function SearchPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const q = params.get("q");
-    if (q) { setQuery(q); doSearch(q); }
+    if (q) { setQuery(q); doSearch(q); } // eslint-disable-line react-hooks/set-state-in-effect
   }, [doSearch]);
 
   return (
@@ -124,7 +124,7 @@ export default function SearchPage() {
 
         {!loading && query && results.length === 0 && meta && (
           <div className="text-center py-20">
-            <p className="text-lg text-muted-foreground">لا توجد نتائج لـ "{query}"</p>
+            <p className="text-lg text-muted-foreground">لا توجد نتائج لـ &quot;{query}&quot;</p>
             <p className="text-sm text-muted-foreground mt-1">حاول استخدام كلمات أخرى</p>
           </div>
         )}

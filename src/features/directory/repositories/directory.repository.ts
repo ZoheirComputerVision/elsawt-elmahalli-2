@@ -41,7 +41,7 @@ export const directoryRepository = {
   async findMany(filter: DirectoryFilter = {}): Promise<DirectoryEntryWithIncludes[]> {
     return prisma.directoryEntry.findMany({
       select: defaultSelect,
-      where: buildWhere(filter) as any,
+      where: buildWhere(filter) as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
       take: filter.limit ?? 100,
       skip: filter.offset ?? 0,
@@ -53,15 +53,15 @@ export const directoryRepository = {
   },
 
   async count(filter: DirectoryFilter = {}): Promise<number> {
-    return prisma.directoryEntry.count({ where: buildWhere(filter) as any });
+    return prisma.directoryEntry.count({ where: buildWhere(filter) as any }); // eslint-disable-line @typescript-eslint/no-explicit-any
   },
 
   async create(data: Record<string, unknown>): Promise<DirectoryEntryWithIncludes> {
-    return prisma.directoryEntry.create({ data: data as any, select: defaultSelect }) as unknown as DirectoryEntryWithIncludes;
+    return prisma.directoryEntry.create({ data: data as any, select: defaultSelect }) as unknown as DirectoryEntryWithIncludes; // eslint-disable-line @typescript-eslint/no-explicit-any
   },
 
   async update(id: string, data: Record<string, unknown>): Promise<DirectoryEntryWithIncludes> {
-    return prisma.directoryEntry.update({ where: { id }, data: data as any, select: defaultSelect }) as unknown as DirectoryEntryWithIncludes;
+    return prisma.directoryEntry.update({ where: { id }, data: data as any, select: defaultSelect }) as unknown as DirectoryEntryWithIncludes; // eslint-disable-line @typescript-eslint/no-explicit-any
   },
 
   async delete(id: string): Promise<void> {
