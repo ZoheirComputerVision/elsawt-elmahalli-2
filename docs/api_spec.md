@@ -1,77 +1,94 @@
-# مواصفات API — الصوت المحلي
+# مواصفات API — الصوت المحلي | The Local Echo
 
 ## 1. القاعدة
-- **عام**: `GET /api/*`
-- **إداري**: `POST/PUT/DELETE /api/admin/*` (يتطلب JWT)
-- **المصادقة**: `Authorization: Bearer <token>`
-- **CSRF**: `X-CSRF-Token: <token_prefix>`
+
 - **الترميز**: JSON
-- **الترقيم**: `?limit=20&offset=0`
+- **المصادقة**: Auth.js (جلسات HTTP)
+- **التفويض**: RBAC عبر `requireRole()` — الأدوار: ADMIN, EDITOR, REPORTER, READER
+- **الترقيم**: `?page=1&limit=20`
+- **البحث**: `?q=<query>` في نقاط البحث
 
 ## 2. نقاط النهاية العامة
 
 | الطريقة | المسار | الوصف |
 |---------|--------|-------|
-| GET | `/api/status` | حالة المنصة |
-| GET | `/api/content` | قائمة المحتوى المنشور |
-| GET | `/api/content/:id` | مقال محدد |
-| POST | `/api/content/:id/view` | تسجيل مشاهدة |
-| GET | `/api/featured` | الأخبار المميزة |
-| GET | `/api/breaking-news` | الأخبار العاجلة |
-| GET | `/api/search?q=` | بحث في المحتوى |
-| GET | `/api/categories` | قائمة التصنيفات |
-| GET | `/api/local-categories` | التصنيفات المحلية (10) |
-| GET | `/api/nav` | شريط التنقل |
-| GET | `/api/latest-news` | آخر الأخبار للتicker |
-| GET | `/api/section/:category` | محتوى قسم محدد |
-| GET | `/api/timeline` | الخط الزمني للأرشيف |
-| GET | `/api/stats` | إحصائيات عامة |
+| GET | `/api/news` | قائمة الأخبار المنشورة (مقسمة) |
+| GET | `/api/news/[slug]` | مقال محدد مع زيادة المشاهدات |
+| GET | `/api/news/search` | بحث في العنوان، الملخص، المحتوى، الوسوم |
+| GET | `/api/directory` | قائمة الدليل الاقتصادي |
+| GET | `/api/ads` | الإعلانات النشطة حسب الموقع |
 
-## 3. نقاط النهاية الإدارية
+## 3. نقاط النهاية المحمية
+
+### الأخبار
 
 | الطريقة | المسار | الصلاحية | الوصف |
 |---------|--------|----------|-------|
-| POST | `/api/admin/auth` | — | تسجيل الدخول |
-| GET | `/api/admin/dashboard` | admin | لوحة التحكم |
-| GET | `/api/admin/content` | editor+ | قائمة المحتوى |
-| GET | `/api/admin/content/:id` | editor+ | تفاصيل مقال |
-| POST | `/api/admin/content/:id/approve` | editor+ | الموافقة على مقال |
-| POST | `/api/admin/content/:id/reject` | editor+ | رفض مقال |
-| POST | `/api/admin/content/:id/delete` | admin | حذف مقال |
-| POST | `/api/admin/content/:id/update` | editor+ | تعديل مقال |
-| POST | `/api/admin/content/:id/image` | editor+ | تعيين صورة المقال |
-| POST | `/api/admin/collect` | admin | جمع يدوي |
-| POST | `/api/admin/collect/manual` | editor+ | إدخال يدوي |
-| POST | `/api/admin/analyze` | admin | تحليل يدوي |
-| POST | `/api/admin/publish` | admin | نشر يدوي |
-| GET | `/api/admin/logs` | admin | سجل القرارات |
-| GET | `/api/admin/settings` | admin | الإعدادات |
-| POST | `/api/admin/settings` | admin | تحديث إعداد |
-| GET | `/api/admin/featured-stories` | editor+ | قائمة المميزة |
-| POST | `/api/admin/featured-stories` | editor+ | إضافة مميزة |
-| PUT | `/api/admin/featured-stories/:id` | editor+ | تعديل مميزة |
-| DELETE | `/api/admin/featured-stories/:id` | editor+ | حذف مميزة |
-| POST | `/api/admin/featured-stories/reorder` | editor+ | إعادة ترتيب |
-| GET | `/api/admin/media` | editor+ | قائمة الوسائط |
-| POST | `/api/admin/media/upload` | editor+ | رفع وسائط |
-| DELETE | `/api/admin/media/:id` | admin | حذف وسيط |
+| POST | `/api/news` | REPORTER+ | إنشاء مقال |
+| PUT | `/api/news/[slug]` | EDITOR+ (تغيير حالة) | تحديث مقال |
+| DELETE | `/api/admin/news/[slug]` | ADMIN | حذف مقال |
 
-## 4. استجابة الخطأ
+### الدليل الاقتصادي
+
+| الطريقة | المسار | الصلاحية | الوصف |
+|---------|--------|----------|-------|
+| POST | `/api/directory` | EDITOR+ | إضافة مدخلة |
+| PUT | `/api/directory/[id]` | EDITOR+ | تحديث مدخلة |
+| DELETE | `/api/directory/[id]` | ADMIN | حذف مدخلة |
+
+### الإعلانات
+
+| الطريقة | المسار | الصلاحية | الوصف |
+|---------|--------|----------|-------|
+| POST | `/api/ads` | EDITOR+ | إضافة إعلان |
+| PUT | `/api/ads/[id]` | EDITOR+ | تحديث إعلان |
+| DELETE | `/api/ads/[id]` | ADMIN | حذف إعلان |
+
+### الوسائط
+
+| الطريقة | المسار | الصلاحية | الوصف |
+|---------|--------|----------|-------|
+| POST | `/api/media` | EDITOR+ | رفع ملف |
+| DELETE | `/api/media/[id]` | ADMIN | حذف ملف |
+
+### المصادقة
+
+| الطريقة | المسار | الوصف |
+|---------|--------|-------|
+| GET/POST | `/api/auth/[...nextauth]` | Auth.js handler |
+| POST | `/api/auth/logout` | تسجيل خروج |
+
+## 4. الصفحات الإدارية
+
+| المسار | الصلاحية | الوصف |
+|--------|----------|-------|
+| `/admin` | ADMIN/EDITOR | لوحة التحكم مع 12 مؤشر أداء |
+| `/admin/users` | ADMIN | إدارة المستخدمين |
+| `/admin/media` | ADMIN/EDITOR | مكتبة الوسائط |
+| `/admin/directory` | ADMIN/EDITOR | إدارة الدليل الاقتصادي |
+| `/admin/ads` | ADMIN/EDITOR | إدارة الإعلانات |
+| `/admin/audit` | ADMIN | سجل التدقيق |
+| `/admin/workspace` | REPORTER+ | مساحة عمل المراسل |
+| `/(admin)/news` | REPORTER+ | إدارة الأخبار |
+
+## 5. استجابة قياسية
+
 ```json
 {
-  "success": false,
-  "error": "رسالة الخطأ"
+  "success": true,
+  "data": { ... },
+  "meta": { "total": 100, "page": 1, "limit": 20 }
 }
 ```
 
-## 5. أكواد الحالة
+## 6. أكواد الحالة
+
 | الكود | المعنى |
 |-------|--------|
 | 200 | نجاح |
 | 201 | تم الإنشاء |
 | 400 | طلب خاطئ |
-| 401 | غير مصرح |
-| 403 | ممنوع (CSRF/صلاحية) |
+| 401 | غير مصادق |
+| 403 | غير مصرح (صلاحية) |
 | 404 | غير موجود |
-| 429 | تجاوز الحد المسموح |
 | 500 | خطأ داخلي |

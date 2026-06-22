@@ -1,78 +1,64 @@
-# قاعدة البيانات — الصوت المحلي
+# قاعدة البيانات — الصوت المحلي | The Local Echo
 
-## 1. نوع قاعدة البيانات
-- **الابتدائي**: JsonDB (ملفات JSON)
-- **الاحتياطي**: SQLite (معد وليس أساسياً)
+## 1. نظام قاعدة البيانات
 
-## 2. الجداول
+- **النظام**: PostgreSQL (16)
+- **الـ ORM**: Prisma (v7) مع `@prisma/adapter-pg`
+- **الاتصال**: مباشر عبر TCP (محلي: `localhost:51217`)
+- **الحالة**: صحية (HEALTHY)
 
-| الجدول | الملف | الوصف |
-|--------|-------|-------|
-| `sources` | `data/sources.json` | مصادر الأخبار (Facebook, RSS, Web) |
-| `raw_data` | `data/raw_data.json` | المواد الخام قبل المعالجة |
-| `processed_content` | `data/processed_content.json` | المحتوى بعد المعالجة والنشر |
-| `media` | `data/media.json` | ملفات الوسائط (صور، فيديو) |
-| `archive` | `data/archive.json` | الأرشيف مع بيانات النسخ الاحتياطي |
-| `ai_decision_log` | `data/ai_decision_log.json` | سجل قرارات AI |
-| `admin_actions` | `data/admin_actions.json` | سجل إجراءات المشرفين (تدقيق) |
-| `settings` | `data/settings.json` | إعدادات النظام (key-value) |
-| `views` | `data/views.json` | سجل المشاهدات |
-| `featured_stories` | `data/featured_stories.json` | الأخبار المميزة في الواجهة |
-| `breaking_news` | `data/breaking_news.json` | الأخبار العاجلة |
-| `subscribers` | `data/subscribers.json` | المشتركون في النشرات |
-| `contacts` | `data/contacts.json` | رسائل التواصل |
-| `categories` | `data/categories.json` | التصنيفات المحلية |
+## 2. النماذج (11 نموذجاً)
 
-## 3. هيكل السجلات
+### النماذج الأساسية
 
-### processed_content
-```json
-{
-  "id": 1,
-  "title": "عنوان الخبر",
-  "body": "محتوى الخبر",
-  "summary": "ملخص",
-  "category": "news",
-  "region": "tiaret",
-  "status": "published",
-  "overall_score": 0.85,
-  "source_name": "المصدر",
-  "published_at": "2026-06-20T...",
-  "view_count": 120,
-  "image_url": "/uploads/img_xxx.jpg",
-  "tenant_id": 1
-}
+| النموذج | الحقول الرئيسية | الوصف |
+|---------|----------------|-------|
+| `Region` | `id`, `name`, `slug`, `type` (wilaya/daira/commune) | التقسيم الجغرافي للتوسع المستقبلي |
+| `Category` | `id`, `name`, `slug` | تصنيفات الأخبار |
+| `Tag` | `id`, `name`, `slug` | وسوم للأخبار |
+| `User` | `id`, `name`, `email`, `role` (ADMIN/EDITOR/REPORTER/READER) | المستخدمون مع RBAC |
+
+### نماذج المحتوى
+
+| النموذج | الحقول الرئيسية | الوصف |
+|---------|----------------|-------|
+| `News` | `id`, `title`, `slug`, `content`, `summary`, `status`, `regionId`, `categoryId`, `authorId` | الأخبار مع 5 حالات |
+| `NewsTag` | `newsId`, `tagId` | علاقة كثير-لكثير |
+| `Media` | `id`, `filename`, `url`, `mimeType`, `size`, `uploaderId` | ملفات الوسائط |
+
+### نماذج الأعمال
+
+| النموذج | الحقول الرئيسية | الوصف |
+|---------|----------------|-------|
+| `DirectoryEntry` | `id`, `name`, `category`, `phone`, `address`, `description`, `regionId` | الدليل الاقتصادي |
+| `Ad` | `id`, `title`, `imageUrl`, `linkUrl`, `position`, `status`, `clicks` | الإعلانات |
+
+### نماذج التدقيق
+
+| النموذج | الحقول الرئيسية | الوصف |
+|---------|----------------|-------|
+| `AuditLog` | `id`, `action`, `entityType`, `entityId`, `userId`, `metadata` | سجل التدقيق الكامل |
+
+## 3. النموذج الجغرافي المستقبلي
+
+```
+Wilaya (ولاية)
+  ├── id, name, slug, code (رقم الولاية)
+  ├── Daira (دائرة)
+  │     ├── id, name, slug
+  │     ├── Commune (بلدية)
+  │     │     ├── id, name, slug
+  │     │     ├── News
+  │     │     ├── Directory
+  │     │     └── Ads
+  │     │     Correspondent → User(REPORTER)
 ```
 
-### media
-```json
-{
-  "id": 1,
-  "filename": "abc123.jpg",
-  "original_name": "photo.jpg",
-  "mime_type": "image/jpeg",
-  "size": 204800,
-  "url": "/uploads/abc123.jpg",
-  "content_id": 5,
-  "usage_count": 2,
-  "created_at": "2026-06-20T..."
-}
-```
+النظام جاهز لإضافة جداول Wilaya/Daira/Commune في Sprint 1.9 دون تغيير جذري في المعمارية.
 
-### featured_stories
-```json
-{
-  "id": 1,
-  "content_id": 5,
-  "position": "featured",
-  "sort_order": 0,
-  "is_active": true,
-  "created_by": "admin",
-  "created_at": "2026-06-20T..."
-}
-```
+## 4. الترحيلات (Migrations)
 
-## 4. التحميل المسبق (Seed)
-- 3 مصادر افتراضية (Facebook، وزارة التربية، إدخال يدوي)
-- 5 إعدادات افتراضية
-- 10 تصنيفات محلية
+| الترحيل | التاريخ | الوصف |
+|---------|---------|-------|
+| `20260621115926_init` | 2026-06-21 | النماذج الأساسية (Region, Category, Tag, News, NewsTag, Media, User, AuditLog) |
+| `20260621141020_add_auth_models` | 2026-06-21 | إضافة DirectoryEntry + Ad |

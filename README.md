@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# الصوت المحلي | The Local Echo
 
-## Getting Started
+**اهتمام محلي ... التزام وطني**
 
-First, run the development server:
+---
+
+منصة إعلامية جهوية رقمية جزائرية تغطي الدوائر والبلديات بعمق ميداني، مع نموذج قابل للتوسع وطنياً.
+
+**المقر**: ولاية تيارت  
+**النطاق الحالي**: تيارت · السوقر · قصر الشلالة  
+**الرؤية**: التوسع إلى 6 ولايات في 3 سنوات
+
+---
+
+## الهوية
+
+| العنصر | القيمة |
+|--------|--------|
+| الاسم العربي | الصوت المحلي |
+| الاسم الدولي | The Local Echo |
+| الشعار | اهتمام محلي ... التزام وطني |
+| النموذج | Wilaya → Daira → Commune → Correspondent |
+| النوع | Media Micro-SaaS |
+
+---
+
+## خريطة التوسع الاستراتيجية
+
+| المرحلة | الإطار الزمني | النطاق | الهدف |
+|---------|---------------|--------|-------|
+| 0: التجهيز | الأسبوع 1–2 | تيارت (المقر) | بناء MVP + عزل بيانات جغرافي |
+| 1: الشق الأول | الشهر 1–3 | تيارت · السوقر · قصر الشلالة | إطلاق فعلي + شبكة مراسلين |
+| 2: التغطية الكاملة | الشهر 4–6 | جميع دوائر تيارت | مراسل في كل دائرة + دليل اقتصادي |
+| 3: التوسع التاريخي | الشهر 7–9 | ولاية تيسمسيلت | تكرار النموذج في ولاية جديدة |
+| 4: التوسع الغربي | الشهر 10–12 | ولاية سعيدة | توسيع الحضور الجهوي |
+| 5: الهضاب والجنوب | السنة 2 | الأغواط · البيض · النعامة | شبكة إعلامية جهوية مترابطة |
+| 6: الامتياز الوطني | السنة 3 | وطني | منصة متعددة الولايات |
+
+---
+
+## التقنية
+
+| الطبقة | التقنية |
+|--------|---------|
+| Framework | Next.js 16 (App Router) |
+| اللغة | TypeScript (strict) |
+| قاعدة البيانات | PostgreSQL |
+| ORM | Prisma |
+| المصادقة | Auth.js (NextAuth v5) |
+| التخزين | Filesystem → Supabase Storage (Sprint 1.9) |
+| الواجهات | TailwindCSS + shadcn/ui |
+| الاستضافة | HostingGuru.io |
+
+---
+
+## البدء
 
 ```bash
+npm install
+npx prisma generate
+npx prisma db push
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# → http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## النشر
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+يتم النشر تلقائياً عبر GitHub → HostingGuru.io بعد كل push.
 
-## Learn More
+```
+git push origin <branch>
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## المشروع
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[GitHub](https://github.com/ZoheirComputerVision/school-news-ai)  
+[الموقع الحي](https://school-news-ai-209c.apps.hostingguru.io/)

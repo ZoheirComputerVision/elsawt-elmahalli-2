@@ -1,68 +1,71 @@
-# التصميم المعماري — الصوت المحلي
+# التصميم المعماري — الصوت المحلي | The Local Echo
 
 ## 1. نظرة عامة
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│                     CLIENT LAYER                              │
-│          HTML5 + CSS3 + Vanilla JS (SPA-like)                 │
-│     public/ → index, article, section, search, media, archive │
-├──────────────────────────────────────────────────────────────┤
-│                     API LAYER                                 │
-│          Express.js Router: /api, /api/admin                  │
-│          Content CRUD, Search, Auth, Stats                    │
-├──────────────────────────────────────────────────────────────┤
-│                     BUSINESS LOGIC LAYER                      │
-│          modules/ → services, managers, engines               │
-│          Collector, Analyzer, Publisher, Scheduler            │
-├──────────────────────────────────────────────────────────────┤
-│                     DATA LAYER                                │
-│          JsonDB (JSON files) → 15+ tables                     │
-│          SQLite (prepared, not primary)                       │
-│          File storage → public/uploads/                       │
-└──────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│                     CLIENT LAYER (Next.js 16)                     │
+│  RSC / Client Components / TailwindCSS / shadcn/ui / RTL Layout   │
+├──────────────────────────────────────────────────────────────────┤
+│                     API LAYER (Next.js App Router)                │
+│  /api/news / /api/directory / /api/ads / /api/media / /api/auth  │
+│  RBAC middleware → auth() في الـ layouts للحماية                   │
+├──────────────────────────────────────────────────────────────────┤
+│                     FEATURE LAYER                                  │
+│  features/ → types, schemas (Zod), repositories, services         │
+│  News / Directory / Ads / Auth / Audit / Search                   │
+├──────────────────────────────────────────────────────────────────┤
+│                     DATA LAYER                                     │
+│  PostgreSQL + Prisma ORM (type-safe queries, auto-migration)      │
+│  Filesystem storage → Supabase Storage (Sprint 1.9)               │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
-## 2. مناطق التغطية الثلاث
+## 2. النموذج الجغرافي
 
-| المنطقة | المعرف | المدن الرئيسية |
-|---------|--------|-----------------|
-| ولاية تيارت | `tiaret` | تيارت، عين كرمس، فرندة، السوقر، مهدية |
-| ولاية تيسمسيلت | `tissemsilt` | تيسمسيلت، برج بونعامة، ثنية الأحد |
-| دائرة قصر الشلالة | `ksar-chellala` | قصر الشلالة |
+```
+Wilaya (ولاية)
+  └── Daira (دائرة)
+        └── Commune (بلدية)
+              └── Correspondent (مراسل)
+                    ├── News (أخبار)
+                    ├── Directory (دليل اقتصادي)
+                    └── Ads (إعلانات)
+```
 
-## 3. طبقات النظام
+كل دائرة وبلدية تمثل وحدة تغطية مستقلة. النظام مصمم لإضافة ولايات جديدة دون إعادة هيكلة.
 
-### 3.1 طبقة العرض (Client Layer)
-- صفحات ثابتة مع JS ديناميكي
-- تصميم متجاوب (Mobile-first)
-- هوية بصرية: أزرق ملكي + ذهبي
+## 3. مسارات التطبيق
 
-### 3.2 طبقة API
-- RESTful endpoints تحت `/api/`
-- مصادقة JWT للمسارات الإدارية
-- CSRF protection
-- Rate limiting
+| المجموعة | المسارات | الحماية |
+|----------|----------|---------|
+| عامة | `/`, `/news/[slug]`, `/search` | عامة |
+| (admin) | `/(admin)/news`, `/(admin)/news/create`, `/(admin)/news/[slug]/edit` | `auth()` + `redirect` |
+| إدارية | `/admin`, `/admin/users`, `/admin/media`, `/admin/directory`, `/admin/ads`, `/admin/audit`, `/admin/workspace` | متداخلة في layout |
+| SEO | `/sitemap.xml`, `/rss.xml`, `/robots.txt` | عامة |
+| API عامة | `GET /api/news`, `GET /api/news/[slug]`, `GET /api/news/search`, `GET /api/directory`, `GET /api/ads` | عامة |
+| API محمية | `POST/PUT/DELETE` للـ news, directory, ads, media | RBAC (REPORTER+/EDITOR+/ADMIN) |
 
-### 3.3 طبقة منطق الأعمال
-- **محرك المحتوى**: جمع → تحليل → كتابة → نشر → أرشفة
-- **الدليل الاقتصادي**: شركات، مؤسسات، أرقام هواتف
-- **الإعلانات**: 6 مناطق إعلانية، حملات، تتبع
-- **البحث**: بحث نصي في المحتوى والأرشيف
+## 4. سير العمل التحريري
 
-### 3.4 طبقة البيانات
-- JsonDB للقراءة/الكتابة السريعة
-- SQLite للاستعلامات المعقدة (جاهز)
-- تخزين الملفات للمرفقات والصور
+```
+مسودة (DRAFT) ← REVIEWER → مراجعة (REVIEW)
+  ← EDITOR → معتمد (APPROVED)
+  ← EDITOR → منشور (PUBLISHED)
+  ← ADMIN → مؤرشف (ARCHIVED)
+```
 
-## 4. الأمن
-- JWT للمصادقة (24h expiry)
-- bcrypt لكلمات المرور
-- CSRF tokens للطلبات الخطرة
-- Rate limiting لمنع الهجمات
-- Helmet للأمان العام
+## 5. الأمن
 
-## 5. النشر
-- منصة: HostingGuru.io / Render.com
-- استراتيجية: Git push → auto-deploy
-- مراقبة: UptimeRobot
+- المصادقة: Auth.js (NextAuth v5) مع Credentials provider
+- التفويض: RBAC بأربعة أدوار (ADMIN, EDITOR, REPORTER, READER)
+- حماية المسارات: `auth()` في `(admin)/layout.tsx`
+- حماية API: `requireRole()` في كل route
+- سجل التدقيق: `src/lib/audit.ts` لكل عملية حساسة
+
+## 6. التوسع المستقبلي
+
+تم بناء المنصة لتكون متعددة الولايات بشكل طبيعي:
+- إضافة `wilayaId` / `dairaId` / `communeId` إلى كل نموذج
+- كل ولاية جديدة تُضاف كبيانات في جدول Wilaya
+- لا حاجة لإعادة تصميم النظام عند إضافة ولاية جديدة

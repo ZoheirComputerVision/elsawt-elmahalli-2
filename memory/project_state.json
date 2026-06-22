@@ -34,8 +34,8 @@
     "PRODUCTION_READINESS_REPORT",
     "GIT_RELEASE_V1_BETA"
   ],
-  "pending_modules": ["SUPABASE_STORAGE", "RATE_LIMITING", "PUBLIC_DIRECTORY_ADS_FRONTEND"],
-  "last_updated": "2026-06-22T22:30:00.000Z",
+  "pending_modules": ["SUPABASE_STORAGE", "RATE_LIMITING", "PUBLIC_DIRECTORY_ADS_FRONTEND", "WILAYA_DAIRA_COMMUNE_MODEL", "GEOGRAPHIC_DATA_LAYER"],
+  "last_updated": "2026-06-22T23:00:00.000Z",
   "database_status": "HEALTHY",
   "build_status": "✅ Passing (26.5s, TypeScript clean, 27 routes)",
   "tech_stack": {
@@ -49,10 +49,29 @@
     "storage": "Local filesystem (public/uploads/)",
     "hosting": "Vercel"
   },
+  "brand": {
+    "name_ar": "الصوت المحلي",
+    "name_en": "The Local Echo",
+    "motto": "اهتمام محلي ... التزام وطني",
+    "vision": "بناء أول منصة إعلامية محلية رقمية في الجزائر تغطي الدوائر والبلديات بعمق ميداني، مع نموذج قابل للتوسع وطنياً.",
+    "mission": "تمكين المواطن المحلي من الوصول إلى أخبار وخدمات ومعلومات موثوقة تخص محيطه المباشر، مع الحفاظ على أعلى معايير المهنية والشفافية."
+  },
+  "expansion_model": {
+    "type": "Wilaya → Daira → Commune → Correspondent",
+    "phases": {
+      "0": { "name": "التجهيز", "timeline": "الأسبوع 1–2", "scope": "تيارت (المقر)", "status": "✅ مكتمل" },
+      "1": { "name": "الشق الأول", "timeline": "الشهر 1–3", "scope": "تيارت · السوقر · قصر الشلالة", "status": "🔴 قيد التنفيذ" },
+      "2": { "name": "التغطية الكاملة", "timeline": "الشهر 4–6", "scope": "جميع دوائر ولاية تيارت", "status": "📝 مخطط" },
+      "3": { "name": "التوسع التاريخي", "timeline": "الشهر 7–9", "scope": "ولاية تيسمسيلت", "status": "📝 مخطط" },
+      "4": { "name": "التوسع الغربي", "timeline": "الشهر 10–12", "scope": "ولاية سعيدة", "status": "📝 مخطط" },
+      "5": { "name": "الهضاب والجنوب", "timeline": "السنة 2", "scope": "الأغواط · البيض · النعامة", "status": "📝 مخطط" },
+      "6": { "name": "الامتياز الوطني", "timeline": "السنة 3", "scope": "وطني", "status": "📝 مخطط" }
+    }
+  },
   "coverage_areas": [
-    "ولاية تيارت",
-    "ولاية تيسمسيلت",
-    "دائرة قصر الشلالة"
+    "ولاية تيارت", "ولاية تيسمسيلت", "دائرة قصر الشلالة",
+    "دائرة السوقر", "دائرة فرندة", "دائرة عين كرمس",
+    "دائرة مهدية", "دائرة دحموني", "دائرة مشرع الصفا"
   ],
   "sprint_1_7_progress": {
     "api_route_protection": "✅ All API routes protected with RBAC",
@@ -85,6 +104,7 @@
     "editorial_ops_handbook": "✅ docs/editorial_operations.md with workflows, pipeline, crisis protocol",
     "kpi_dashboard": "✅ 12 stat cards in /admin (added reporters, ads, directory counts)",
     "production_readiness": "✅ reports/production_readiness_report.md — 76% overall (6/9 pass)",
-    "git_release": "✅ v1.0.0-beta tagged and pushed to GitHub"
+    "git_release": "✅ v1.0.0-beta tagged and pushed to GitHub",
+    "strategic_rebrand": "✅ Full brand identity + expansion strategy documented across all docs"
   }
 }

@@ -1,4 +1,4 @@
-# القرارات التقنية — الصوت المحلي
+# القرارات التقنية — الصوت المحلي | The Local Echo
 
 > تم تسجيل هذه القرارات في Sprint 0 (Project Bootstrap) وتشكل الأساس المعماري للمشروع.
 
@@ -94,3 +94,25 @@
 | السبب | prisma dev proxy لا يدعم HTTP مع Prisma Client v7.8.0 (يُقبل حتى v7.2.0 فقط)، لذا نستخدم @prisma/adapter-pg مع اتصال PostgreSQL مباشر على المنفذ 51217 |
 | النطاق | src/lib/prisma.ts، prisma/seed.ts، .env |
 | التفاصيل | DATABASE_URL تغيّر من `prisma+postgres://localhost:51213/...` إلى `postgres://postgres:postgres@localhost:51217/template1?...` — و PrismaClient يستخدم `{ adapter }` بدلاً من `{ accelerateUrl }` |
+
+## 11. Multi-Wilaya Geographic Data Model
+
+| البند | القيمة |
+|-------|--------|
+| الحالة | ✅ مقرر |
+| التاريخ | 2026-06-22 |
+| البديل | Region واحد بمعرف نصي |
+| السبب | التوسع المستقبلي يتطلب هيكل Wilaya → Daira → Commune → Correspondent رسمي في Prisma، مع عزل بيانات جغرافي يسمح بإضافة ولايات جديدة دون إعادة تصميم |
+| النطاق | prisma/schema.prisma — إضافة جداول Wilaya, Daira, Commune في Sprint 1.9 |
+| التفاصيل | كل ولاية تحمل محتوى ودليل اقتصادي وإعلانات ومراسلين مستقلين. النظام جاهز للربط عبر `wilayaId` في الجداول الحالية. |
+
+## 12. Brand Identity — الصوت المحلي | The Local Echo
+
+| البند | القيمة |
+|-------|--------|
+| الحالة | ✅ مقرر |
+| التاريخ | 2026-06-22 |
+| البديل | — |
+| السبب | توحيد الهوية الرسمية للمشروع: الاسم، الشعار، الرؤية، الرسالة، خريطة التوسع |
+| النطاق | جميع الوثائق، README، الموقع، الـ meta tags |
+| التفاصيل | الاسم العربي: الصوت المحلي — الاسم الدولي: The Local Echo — الشعار: "اهتمام محلي ... التزام وطني" — الرؤية: بناء أول منصة إعلامية محلية رقمية في الجزائر — النموذج: Wilaya → Daira → Commune → Correspondent |

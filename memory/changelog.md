@@ -2,6 +2,14 @@
 
 ## v1.0.0-beta — Sprint 1.7 + 1.8: الإصدار الأول (2026-06-22)
 
+### 🏛️ إعادة الهيكلة الاستراتيجية
+- **الهوية الرسمية**: الصوت المحلي | The Local Echo — شعار: "اهتمام محلي ... التزام وطني"
+- **الرؤية**: بناء أول منصة إعلامية محلية رقمية في الجزائر
+- **خريطة التوسع**: 7 مراحل (التجهيز → الشق الأول → التغطية الكاملة → التوسع التاريخي → التوسع الغربي → الهضاب والجنوب → الامتياز الوطني)
+- **النموذج الجغرافي**: Wilaya → Daira → Commune → Correspondent
+- **الوثائق المحدثة**: README، project_constitution، architecture، database، api_spec، infrastructure
+- **القرارات المضافة**: multi-wilaya geographic model + brand identity في decisions.md
+
 ### 🚀 إطلاق v1.0.0-beta
 - 🛡️ **Production Security Audit**: مراجعة 11 API route + RBAC + upload safety (`reports/security_audit_report.md`)
 - ⚠️ **Error Monitoring Layer**: `logger.ts` (4 levels), `error.tsx` (global boundary), `global-error.tsx`, `not-found.tsx`
