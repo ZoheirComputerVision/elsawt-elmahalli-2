@@ -21,6 +21,13 @@ export interface MediaDto {
   size: number;
 }
 
+export interface UserDto {
+  id: string;
+  name: string;
+  bio: string | null;
+  specialization: string | null;
+}
+
 export interface NewsResponse {
   id: string;
   title: string;
@@ -34,6 +41,9 @@ export interface NewsResponse {
   updatedAt: string;
   category: CategoryDto;
   region: RegionDto | null;
+  communeId: string | null;
+  regionId: string | null;
+  createdBy: UserDto | null;
   media: MediaDto[];
 }
 

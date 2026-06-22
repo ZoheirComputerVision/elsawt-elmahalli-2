@@ -9,7 +9,7 @@ async function getNews(filter: NewsFilter = {}) {
 
   return prisma.news.findMany({
     where: where as never,
-    include: { category: true, region: true, media: true },
+    include: { category: true, region: true, media: true, createdBy: { select: { id: true, name: true, bio: true, specialization: true } } },
     orderBy: { publishedAt: "desc" },
     take: filter.limit ?? 20,
     skip: filter.offset ?? 0,

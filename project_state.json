@@ -1,0 +1,47 @@
+{
+  "version": "1.3.0",
+  "phase": "BETA_LAUNCH_PREPARATION",
+  "releaseDate": "2026-06-22",
+  "routes": 50,
+  "status": {
+    "security": "95%",
+    "publicExperience": "90%",
+    "journalistProfiles": "85%",
+    "directoryPages": "90%",
+    "advertising": "85%",
+    "geographicPages": "90%",
+    "newsletter": "80%",
+    "contactCenter": "85%",
+    "dashboardAnalytics": "100%"
+  },
+  "prismaModels": 18,
+  "lastBuild": "✅ 50 routes, 0 errors, 4 warnings",
+  "lastMigration": "add_beta_models",
+  "features": {
+    "news": ["breadcrumbs", "authorBox", "readingTime", "viewCounter", "copyLink", "print", "newsletterSubscribe", "relatedArticles", "shareButtons", "openGraph"],
+    "reporters": true,
+    "directory": ["listing", "detail"],
+    "geographic": ["wilaya", "daira", "commune"],
+    "contact": ["general", "news_tip", "correction", "report"],
+    "newsletter": ["subscribe", "admin"],
+    "admin": ["dashboard", "newsletter", "contact", "ads"],
+    "rateLimiting": ["news", "search", "directory", "ads", "media", "auth", "newsletter", "contact", "ad-view"],
+    "security": ["rbac", "jwt", "bcrypt", "rateLimiting", "envValidation", "errorHandler"],
+    "reports": {
+      "betaLaunchAudit": "89%",
+      "publicExperience": "90/100",
+      "geographicPages": "90/100",
+      "performanceReview": "87%",
+      "productionReadiness": "83%",
+      "securityAudit": "✅ Rate Limiting"
+    }
+  },
+  "pendingItems": [
+    "SMTP/Email integration for newsletter",
+    "Supabase Storage (local only)",
+    "/reporters listing page",
+    "Interactive map for wilaya"
+  ],
+  "repository": "https://github.com/ZoheirComputerVision/school-news-ai.git",
+  "liveSite": "https://school-news-ai-209c.apps.hostingguru.io/"
+}

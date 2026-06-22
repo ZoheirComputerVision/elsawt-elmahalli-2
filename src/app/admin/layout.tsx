@@ -63,6 +63,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Link href="/admin/users" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
             المستخدمون
           </Link>
+          <Link href="/admin/newsletter" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
+            النشرة البريدية
+          </Link>
+          <Link href="/admin/contact" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
+            رسائل التواصل
+          </Link>
         </nav>
 
         {children}

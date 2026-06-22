@@ -17,6 +17,9 @@ function toNewsResponse(item: NewsWithIncludes): NewsResponse {
     publishedAt: item.publishedAt?.toISOString() ?? null,
     createdAt: item.createdAt.toISOString(),
     updatedAt: item.updatedAt.toISOString(),
+    communeId: item.communeId,
+    regionId: item.regionId,
+    createdBy: item.createdBy ? { id: item.createdBy.id, name: item.createdBy.name, bio: item.createdBy.bio, specialization: item.createdBy.specialization } : null,
     category: { id: item.category.id, name: item.category.name, slug: item.category.slug },
     region: item.region ? { id: item.region.id, name: item.region.name, slug: item.region.slug } : null,
     media: item.media.map((m) => ({

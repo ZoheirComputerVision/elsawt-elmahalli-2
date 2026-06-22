@@ -6,6 +6,7 @@ const include = {
   category: true,
   region: true,
   media: true,
+  createdBy: { select: { id: true, name: true, bio: true, specialization: true } },
   tags: { include: { tag: true } },
 } as const;
 
