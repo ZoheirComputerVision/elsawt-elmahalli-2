@@ -1,6 +1,6 @@
 {
-  "version": "0.9.5",
-  "phase": "SPRINT_1_7",
+  "version": "1.0.0-beta",
+  "phase": "LAUNCH_READINESS",
   "completed_modules": [
     "PROJECT_FOUNDATION",
     "TECHNICAL_SCAFFOLD",
@@ -25,12 +25,19 @@
     "ECONOMIC_DIRECTORY",
     "ADS_MANAGER",
     "AUDIT_DASHBOARD",
-    "REPORTER_WORKSPACE"
+    "REPORTER_WORKSPACE",
+    "PRODUCTION_SECURITY_AUDIT",
+    "ERROR_MONITORING",
+    "BACKUP_STRATEGY",
+    "EDITORIAL_OPS_HANDBOOK",
+    "KPI_DASHBOARD",
+    "PRODUCTION_READINESS_REPORT",
+    "GIT_RELEASE_V1_BETA"
   ],
-  "pending_modules": [],
-  "last_updated": "2026-06-22T21:00:00.000Z",
+  "pending_modules": ["SUPABASE_STORAGE", "RATE_LIMITING", "PUBLIC_DIRECTORY_ADS_FRONTEND"],
+  "last_updated": "2026-06-22T22:30:00.000Z",
   "database_status": "HEALTHY",
-  "build_status": "✅ Passing (15.4s, TypeScript clean, 27 routes)",
+  "build_status": "✅ Passing (26.5s, TypeScript clean, 27 routes)",
   "tech_stack": {
     "framework": "Next.js 16",
     "language": "TypeScript",
@@ -58,5 +65,26 @@
     "audit_dashboard": "✅ /admin/audit — full log viewer",
     "seo": "✅ sitemap.xml, rss.xml, robots.txt",
     "route_group_security": "✅ (admin) group now protected with auth check"
+  },
+  "sprint_1_8_progress": {
+    "api_route_protection": "✅ All API routes protected with RBAC",
+    "dashboard_analytics": "✅ Stat cards, bar charts, editorial pipeline",
+    "media_library": "✅ Upload, gallery, copy URL, delete",
+    "search_engine": "✅ /search page + /api/news/search (full-text)",
+    "economic_directory": "✅ Prisma model, feature, API CRUD, admin page",
+    "ads_manager": "✅ Prisma model, feature, API CRUD, admin page",
+    "reporter_workspace": "✅ /admin/workspace — streamlined reporter view",
+    "audit_dashboard": "✅ /admin/audit — full log viewer",
+    "seo": "✅ sitemap.xml, rss.xml, robots.txt",
+    "route_group_security": "✅ (admin) group now protected with auth check"
+  },
+  "sprint_1_8_progress": {
+    "security_audit": "✅ Full API/upload/RBAC audit with recommendations (reports/security_audit_report.md)",
+    "error_monitoring": "✅ logger.ts, error.tsx, global-error.tsx, not-found.tsx",
+    "backup_strategy": "✅ docs/backup_strategy.md with pg_dump, media backup, 30-day rotation, restore test",
+    "editorial_ops_handbook": "✅ docs/editorial_operations.md with workflows, pipeline, crisis protocol",
+    "kpi_dashboard": "✅ 12 stat cards in /admin (added reporters, ads, directory counts)",
+    "production_readiness": "✅ reports/production_readiness_report.md — 76% overall (6/9 pass)",
+    "git_release": "✅ v1.0.0-beta tagged and pushed to GitHub"
   }
 }
