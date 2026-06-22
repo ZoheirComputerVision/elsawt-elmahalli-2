@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0-beta",
-  "phase": "LAUNCH_READINESS",
+  "version": "1.1.0",
+  "phase": "GEOGRAPHIC_LAYER",
   "completed_modules": [
     "PROJECT_FOUNDATION",
     "TECHNICAL_SCAFFOLD",
@@ -32,12 +32,13 @@
     "EDITORIAL_OPS_HANDBOOK",
     "KPI_DASHBOARD",
     "PRODUCTION_READINESS_REPORT",
-    "GIT_RELEASE_V1_BETA"
+    "GIT_RELEASE_V1_BETA",
+    "GEOGRAPHIC_LAYER"
   ],
-  "pending_modules": ["SUPABASE_STORAGE", "RATE_LIMITING", "PUBLIC_DIRECTORY_ADS_FRONTEND", "WILAYA_DAIRA_COMMUNE_MODEL", "GEOGRAPHIC_DATA_LAYER"],
-  "last_updated": "2026-06-22T23:00:00.000Z",
+  "pending_modules": ["SUPABASE_STORAGE", "RATE_LIMITING", "PUBLIC_DIRECTORY_ADS_FRONTEND"],
+  "last_updated": "2026-06-22T23:30:00.000Z",
   "database_status": "HEALTHY",
-  "build_status": "✅ Passing (26.5s, TypeScript clean, 27 routes)",
+  "build_status": "✅ Passing (44s, TypeScript clean, 36 routes)",
   "tech_stack": {
     "framework": "Next.js 16",
     "language": "TypeScript",
@@ -86,18 +87,6 @@
     "route_group_security": "✅ (admin) group now protected with auth check"
   },
   "sprint_1_8_progress": {
-    "api_route_protection": "✅ All API routes protected with RBAC",
-    "dashboard_analytics": "✅ Stat cards, bar charts, editorial pipeline",
-    "media_library": "✅ Upload, gallery, copy URL, delete",
-    "search_engine": "✅ /search page + /api/news/search (full-text)",
-    "economic_directory": "✅ Prisma model, feature, API CRUD, admin page",
-    "ads_manager": "✅ Prisma model, feature, API CRUD, admin page",
-    "reporter_workspace": "✅ /admin/workspace — streamlined reporter view",
-    "audit_dashboard": "✅ /admin/audit — full log viewer",
-    "seo": "✅ sitemap.xml, rss.xml, robots.txt",
-    "route_group_security": "✅ (admin) group now protected with auth check"
-  },
-  "sprint_1_8_progress": {
     "security_audit": "✅ Full API/upload/RBAC audit with recommendations (reports/security_audit_report.md)",
     "error_monitoring": "✅ logger.ts, error.tsx, global-error.tsx, not-found.tsx",
     "backup_strategy": "✅ docs/backup_strategy.md with pg_dump, media backup, 30-day rotation, restore test",
@@ -106,5 +95,15 @@
     "production_readiness": "✅ reports/production_readiness_report.md — 76% overall (6/9 pass)",
     "git_release": "✅ v1.0.0-beta tagged and pushed to GitHub",
     "strategic_rebrand": "✅ Full brand identity + expansion strategy documented across all docs"
+  },
+  "sprint_1_9_progress": {
+    "wilaya_daira_commune_model": "✅ 3 Prisma models (Wilaya, Daira, Commune) with relations to News/Directory/Ads/User",
+    "migration": "✅ Migration applied — 14 Prisma models total",
+    "seed_data": "✅ Wilaya de Tiaret (code 14): 14 dairas, 34 communes seeded",
+    "repository": "✅ geographicRepository with getWilayas/getDairasByWilaya/getCommunesByDaira",
+    "api_routes": "✅ 16 API endpoints (CRUD + stats) with RBAC (ADMIN-only write)",
+    "admin_pages": "✅ /admin/wilayas, /admin/dairas, /admin/communes — full CRUD",
+    "dashboard": "✅ 3 new stat cards (wilayas, dairas, communes) in /admin",
+    "build": "✅ 36 routes, TypeScript clean"
   }
 }

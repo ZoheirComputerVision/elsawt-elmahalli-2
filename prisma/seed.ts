@@ -13,6 +13,27 @@ const regions = [
   { name: "قصر الشلالة", slug: "ksar-chellala" },
 ];
 
+// هيكل ولاية تيارت — 14 دائرة مع بلدياتها
+const wilayaTiaret: {
+  dairaName: string;
+  communes: string[];
+}[] = [
+  { dairaName: "تيارت", communes: ["تيارت"] },
+  { dairaName: "السوقر", communes: ["السوقر", "سيدي حسني", "سيدي سليمان", "سيدي علي ملال"] },
+  { dairaName: "فرندة", communes: ["فرندة", "عين الحديد"] },
+  { dairaName: "عين الذهب", communes: ["عين الذهب", "شحيمة", "تاقدمت"] },
+  { dairaName: "الرحوية", communes: ["الرحوية", "قرطوفة"] },
+  { dairaName: "مهدية", communes: ["مهدية", "سبعين", "سيدي بختي"] },
+  { dairaName: "حمادية", communes: ["حمادية", "بوقرة"] },
+  { dairaName: "مدروسة", communes: ["مدروسة", "سيدي عبد الرحمن"] },
+  { dairaName: "مشرع الصفا", communes: ["مشرع الصفا", "جيلالي بن عمار", "تيدة"] },
+  { dairaName: "سيدي علي ملال", communes: ["سيدي علي ملال", "تيدسي", "سيدي بوزكري"] },
+  { dairaName: "سبعين", communes: ["سبعين", "سيدي حسني"] },
+  { dairaName: "قصر الشلالة", communes: ["قصر الشلالة", "عصفور", "سطيحة"] },
+  { dairaName: "زمالة الأمير عبد القادر", communes: ["زمالة الأمير عبد القادر"] },
+  { dairaName: "عين كرمس", communes: ["عين كرمس", "مليانة", "النعيمة"] },
+];
+
 const categories = [
   { name: "محليات", slug: "local" },
   { name: "الوطن", slug: "nation" },
@@ -88,6 +109,34 @@ async function main() {
     });
     newsCount++;
     console.log(`  ✓ ${item.title.substring(0, 40)}...`);
+  }
+
+  console.log("🌱 Seeding Wilaya de Tiaret (code 14)...");
+  const wilaya = await prisma.wilaya.upsert({
+    where: { code: 14 },
+    update: {},
+    create: { name: "تيارت", slug: "tiaret", code: 14, active: true },
+  });
+  console.log(`  ✓ ${wilaya.name} (code ${wilaya.code})`);
+
+  for (const d of wilayaTiaret) {
+    const dairaSlug = toSlug(d.dairaName);
+    const daira = await prisma.daira.upsert({
+      where: { wilayaId_slug: { wilayaId: wilaya.id, slug: dairaSlug } },
+      update: {},
+      create: { name: d.dairaName, slug: dairaSlug, wilayaId: wilaya.id, active: true },
+    });
+    console.log(`  ✓ دائرة ${d.dairaName}`);
+
+    for (const c of d.communes) {
+      const communeSlug = toSlug(c);
+      await prisma.commune.upsert({
+        where: { dairaId_slug: { dairaId: daira.id, slug: communeSlug } },
+        update: {},
+        create: { name: c, slug: communeSlug, dairaId: daira.id, active: true },
+      });
+    }
+    console.log(`    ↳ ${d.communes.length} بلدية`);
   }
 
   console.log("🌱 Seeding admin user...");

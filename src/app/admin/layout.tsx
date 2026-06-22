@@ -47,6 +47,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Link href="/admin/ads" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
             الإعلانات
           </Link>
+          <Link href="/admin/wilayas" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
+            الولايات
+          </Link>
+          <Link href="/admin/dairas" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
+            الدوائر
+          </Link>
+          <Link href="/admin/communes" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
+            البلديات
+          </Link>
           <Link href="/admin/audit" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
             سجل التدقيق
           </Link>

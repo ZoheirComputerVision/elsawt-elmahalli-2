@@ -7,6 +7,57 @@ datasource db {
   provider = "postgresql"
 }
 
+model Wilaya {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  code      Int      @unique
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  dairas Daira[]
+
+  @@map("wilayas")
+}
+
+model Daira {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  wilayaId String @map("wilaya_id")
+  wilaya   Wilaya @relation(fields: [wilayaId], references: [id])
+
+  communes Commune[]
+
+  @@unique([wilayaId, slug])
+  @@map("dairas")
+}
+
+model Commune {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  dairaId String @map("daira_id")
+  daira   Daira  @relation(fields: [dairaId], references: [id])
+
+  news       News[]
+  directories DirectoryEntry[]
+  ads        Ad[]
+  reporters  User[]
+
+  @@unique([dairaId, slug])
+  @@map("communes")
+}
+
 model Region {
   id        String   @id @default(cuid())
   name      String   @unique
@@ -44,8 +95,10 @@ model News {
   categoryId String   @map("category_id")
   category   Category @relation(fields: [categoryId], references: [id])
 
-  regionId String? @map("region_id")
-  region   Region? @relation(fields: [regionId], references: [id])
+  regionId  String?  @map("region_id")
+  region    Region?  @relation(fields: [regionId], references: [id])
+  communeId String?  @map("commune_id")
+  commune   Commune? @relation(fields: [communeId], references: [id])
 
   createdById String? @map("created_by_id")
   createdBy   User?   @relation(fields: [createdById], references: [id])
@@ -110,6 +163,9 @@ model User {
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
 
+  communeId String?  @map("commune_id")
+  commune   Commune? @relation(fields: [communeId], references: [id])
+
   news    News[]
   actions AuditLog[]
 
@@ -131,6 +187,8 @@ model DirectoryEntry {
   status      String   @default("active")
   featured    Boolean  @default(false)
   contactName String?  @map("contact_name")
+  communeId   String?  @map("commune_id")
+  commune     Commune? @relation(fields: [communeId], references: [id])
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
@@ -148,6 +206,8 @@ model Ad {
   startDate DateTime? @map("start_date")
   endDate   DateTime? @map("end_date")
   clicks    Int      @default(0)
+  communeId String?  @map("commune_id")
+  commune   Commune? @relation(fields: [communeId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

@@ -78,6 +78,9 @@ export default async function AdminDashboard() {
     regionsCount,
     adsCount,
     directoryCount,
+    wilayasCount,
+    dairasCount,
+    communesCount,
     lastPublished,
     perDay,
     perCategory,
@@ -95,6 +98,9 @@ export default async function AdminDashboard() {
     prisma.region.count(),
     prisma.ad.count(),
     prisma.directoryEntry.count(),
+    prisma.wilaya.count(),
+    prisma.daira.count(),
+    prisma.commune.count(),
     prisma.news.findFirst({ where: { status: "published" }, orderBy: { publishedAt: "desc" }, select: { publishedAt: true } }),
     getNewsPerDay(),
     getNewsPerCategory(),
@@ -122,6 +128,9 @@ export default async function AdminDashboard() {
         <StatCard label="المناطق" value={regionsCount} color="text-navy" />
         <StatCard label="الإعلانات" value={adsCount} color="text-navy" />
         <StatCard label="الدليل" value={directoryCount} color="text-navy" />
+        <StatCard label="الولايات" value={wilayasCount} color="text-purple-600" />
+        <StatCard label="الدوائر" value={dairasCount} color="text-purple-600" />
+        <StatCard label="البلديات" value={communesCount} color="text-purple-600" />
       </div>
 
       {/* Charts row */}

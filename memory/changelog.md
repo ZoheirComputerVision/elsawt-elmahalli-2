@@ -1,5 +1,18 @@
 # سجل التغييرات — الصوت المحلي
 
+## v1.1.0 — Sprint 1.8: Geographic Layer Foundation (2026-06-22)
+
+### 🗺️ طبقة البيانات الجغرافية
+- **Wilaya/Daira/Commune**: 3 نماذج Prisma جديدة مع العلاقات الكاملة
+- **الترحيل**: `add_geographic_models` migration مطبقة (14 نموذج إجمالي)
+- **البذْر**: ولاية تيارت (الرمز 14) — 14 دائرة و 34 بلدية
+- **المستودع**: `src/features/geographic/` — استعلامات getWilayas/getDairasByWilaya/getCommunesByDaira
+- **API Routes**: 16 نقطة نهاية (CRUD + إحصائيات) مع RBAC (ADMIN للكتابة)
+- **صفحات الإدارة**: `/admin/wilayas`, `/admin/dairas`, `/admin/communes` — CRUD كامل
+- **Dashboard**: 3 بطاقات إحصائية جديدة (الولايات، الدوائر، البلديات)
+- **التقارير**: `reports/geographic_layer_report.md`
+- **البناء**: 36 route, TypeScript clean (44s)
+
 ## v1.0.0-beta — Sprint 1.7 + 1.8: الإصدار الأول (2026-06-22)
 
 ### 🏛️ إعادة الهيكلة الاستراتيجية
