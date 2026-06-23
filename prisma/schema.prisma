@@ -421,3 +421,12 @@ model SocialPost {
 
   @@map("social_posts")
 }
+
+model AppSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("app_settings")
+}
