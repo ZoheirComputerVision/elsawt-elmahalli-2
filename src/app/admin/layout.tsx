@@ -2,6 +2,20 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
+const NAV_ITEMS = [
+  { href: "/admin", label: "الرئيسية", icon: "📊" },
+  { href: "/admin/review", label: "مراجعة المحتوى", icon: "📝" },
+  { href: "/news", label: "الأخبار", icon: "📰" },
+  { href: "/admin/media", label: "مكتبة الوسائط", icon: "🖼" },
+  { href: "/admin/featured", label: "الخبر الرئيسي", icon: "⭐" },
+  { href: "/admin/breaking-news", label: "الأخبار العاجلة", icon: "📢" },
+  { href: "/admin/users", label: "المستخدمون", icon: "👥" },
+  { href: "/admin/logs", label: "سجل AI", icon: "📋" },
+  { href: "/admin/settings", label: "الإعدادات", icon: "⚙️" },
+  { href: "/admin/ads", label: "الإعلانات", icon: "📺" },
+  { href: "/admin/social", label: "التواصل", icon: "📱" },
+];
+
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
   if (!session?.user) redirect("/login");
@@ -19,6 +33,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </span>
           </div>
           <div className="flex items-center gap-4">
+            <Link href="/" className="text-xs text-gray-300 hover:text-gold transition-colors">
+              🏠 الموقع
+            </Link>
             <span className="text-sm text-gray-300 hidden sm:block">{session.user.name}</span>
             {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a href="/api/auth/logout" className="text-xs text-gold hover:text-gold-light transition-colors">
@@ -30,72 +47,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
       <div className="max-w-7xl mx-auto px-4 py-4">
         <nav className="flex gap-4 mb-6 border-b border-gray-200 pb-3 overflow-x-auto">
-          <Link href="/admin" className="text-sm font-bold text-gold border-b-2 border-gold pb-3 -mb-[1px] shrink-0">
-            الرئيسية
-          </Link>
-          <Link href="/admin/workspace" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            مساحة العمل
-          </Link>
-          <Link href="/admin/coverage" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            التغطية
-          </Link>
-          <Link href="/admin/coverage/score" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            مؤشر التغطية
-          </Link>
-          <Link href="/admin/coverage/gaps" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            الثغرات
-          </Link>
-          <Link href="/admin/reporters/ranking" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            ترتيب المراسلين
-          </Link>
-          <Link href="/admin/geographic/search" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            بحث جغرافي
-          </Link>
-          <Link href="/admin/assignments" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            المهام
-          </Link>
-          <Link href="/news" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            الأخبار
-          </Link>
-          <Link href="/admin/media" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            الوسائط
-          </Link>
-          <Link href="/admin/directory" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            الدليل الاقتصادي
-          </Link>
-          <Link href="/admin/breaking-news" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            التنبيهات
-          </Link>
-          <Link href="/admin/social" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            التواصل
-          </Link>
-          <Link href="/admin/ads" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            الإعلانات
-          </Link>
-          <Link href="/admin/wilayas" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            الولايات
-          </Link>
-          <Link href="/admin/dairas" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            الدوائر
-          </Link>
-          <Link href="/admin/communes" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            البلديات
-          </Link>
-          <Link href="/admin/audit" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            سجل التدقيق
-          </Link>
-          <Link href="/admin/reporters" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            المراسلون
-          </Link>
-          <Link href="/admin/users" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            المستخدمون
-          </Link>
-          <Link href="/admin/newsletter" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            النشرة البريدية
-          </Link>
-          <Link href="/admin/contact" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
-            رسائل التواصل
-          </Link>
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-sm text-navy hover:text-gold transition-colors shrink-0 whitespace-nowrap"
+            >
+              {item.icon} {item.label}
+            </Link>
+          ))}
         </nav>
 
         {children}
