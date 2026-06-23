@@ -1,15 +1,19 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
+
+type WilayaItem = { id: string; name: string; slug: string; _count?: { dairas: number }; dairas?: DairaItem[] };
+type DairaItem = { id: string; name: string; slug: string; wilaya?: { name: string; slug: string }; communes?: CommuneItem[]; _count?: { communes: number } };
+type CommuneItem = { id: string; name: string; slug: string; daira?: { name: string; wilaya: { name: string } }; _count?: { news: number; reporters: number } };
+type ReporterItem = { id: string; name: string; commune?: { name: string; daira: { name: string; wilaya: { name: string } } } | null };
 
 type GeoResult = {
   type: string;
-  result?: any;
-  wilayas?: any[];
-  dairas?: any[];
-  communes?: any[];
-  reporters?: any[];
+  result?: WilayaItem | DairaItem | CommuneItem;
+  wilayas?: WilayaItem[];
+  dairas?: DairaItem[];
+  communes?: CommuneItem[];
+  reporters?: ReporterItem[];
   q?: string;
 };
 
@@ -32,14 +36,24 @@ export default function GeographicSearchPage() {
       const data = await res.json();
       if (!data.success) { setError(data.error); setResult(null); }
       else setResult(data.data);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
     } finally { setLoading(false); }
   }, []);
 
   useEffect(() => {
-    search({});
+    const load = async () => { await search({}); };
+    load();
   }, [search]);
+
+  function selectWilaya(slug: string) { setWilaya(slug); setDaira(""); setCommune(""); search({ wilaya: slug }); }
+  function selectDaira(wilayaSlug: string, dairaSlug: string) { setWilaya(wilayaSlug); setDaira(dairaSlug); setCommune(""); search({ wilaya: wilayaSlug, daira: dairaSlug }); }
+  function selectCommune(wilayaSlug: string, dairaSlug: string, communeSlug: string) { setWilaya(wilayaSlug); setDaira(dairaSlug); setCommune(communeSlug); search({ commune: communeSlug }); }
+
+  const handleSearch = () => search({ wilaya, daira, commune, q });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const r: any = result?.result;
 
   return (
     <div>
@@ -86,7 +100,7 @@ export default function GeographicSearchPage() {
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() => search({ wilaya, daira, commune, q })}
+            onClick={handleSearch}
             disabled={loading}
             className="bg-navy text-white px-4 py-2 rounded-sm text-xs font-bold hover:bg-navy/80 disabled:opacity-50"
           >
@@ -105,14 +119,14 @@ export default function GeographicSearchPage() {
 
       {result && (
         <div className="space-y-4">
-          {result.type === "wilaya" && result.result && (
+          {result.type === "wilaya" && r && (
             <div className="bg-white border border-gray-200 rounded-sm p-4">
-              <h2 className="text-sm font-bold text-navy mb-2">{result.result.name}</h2>
+              <h2 className="text-sm font-bold text-navy mb-2">{r.name}</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                {result.result.dairas?.map((d: any) => (
+                {(r.dairas ?? []).map((d: DairaItem) => (
                   <button
                     key={d.id}
-                    onClick={() => { setWilaya(result.result.slug); setDaira(d.slug); search({ wilaya: result.result.slug, daira: d.slug }); }}
+                    onClick={() => selectDaira(r.slug, d.slug)}
                     className="border border-gray-200 rounded-sm p-2 text-xs text-right hover:bg-gray-50"
                   >
                     <p className="font-bold">{d.name}</p>
@@ -123,38 +137,89 @@ export default function GeographicSearchPage() {
             </div>
           )}
 
-          {result.type === "daira" && result.result && (
+          {result.type === "daira" && r && (
             <div className="bg-white border border-gray-200 rounded-sm p-4">
-              <h2 className="text-sm font-bold text-navy mb-1">{result.result.name}</h2>
-              <p className="text-[10px] text-muted-foreground mb-3">{result.result.wilaya.name}</p>
+              <h2 className="text-sm font-bold text-navy mb-1">{r.name}</h2>
+              <p className="text-[10px] text-muted-foreground mb-3">{r.wilaya?.name}</p>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                {result.result.communes?.map((c: any) => (
+                {(r.communes ?? []).map((c: CommuneItem) => (
                   <button
                     key={c.id}
-                    onClick={() => { setWilaya(result.result.wilaya.slug); setDaira(result.result.slug); setCommune(c.slug); search({ commune: c.slug }); }}
+                    onClick={() => selectCommune(r.wilaya?.slug ?? "", r.slug, c.slug)}
                     className="border border-gray-200 rounded-sm p-2 text-xs text-right hover:bg-gray-50"
                   >
                     <p className="font-bold">{c.name}</p>
-                    <p className="text-[10px]">{c._count.news} أخبار | {c._count.reporters} مراسلين</p>
+                    <p className="text-[10px]">{c._count?.news ?? 0} أخبار | {c._count?.reporters ?? 0} مراسلين</p>
                   </button>
                 ))}
               </div>
             </div>
           )}
 
-          {result.type === "commune" && result.result && (
+          {result.type === "commune" && r && (
             <div className="bg-white border border-gray-200 rounded-sm p-4">
-              <h2 className="text-sm font-bold text-navy mb-1">{result.result.name}</h2>
-              <p className="text-[10px] text-muted-foreground">{result.result.daira.wilaya.name} &gt; {result.result.daira.name}</p>
+              <h2 className="text-sm font-bold text-navy mb-1">{r.name}</h2>
+              <p className="text-[10px] text-muted-foreground">{r.daira?.wilaya?.name} &gt; {r.daira?.name}</p>
             </div>
           )}
 
           {result.type === "search" && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <SearchSection title="الولايات" items={result.wilayas ?? []} slugKey="slug" />
-              <SearchSection title="الدوائر" items={(result.dairas ?? []).map((d: any) => ({ ...d, parent: d.wilaya?.name }))} slugKey="slug" />
-              <SearchSection title="البلديات" items={(result.communes ?? []).map((c: any) => ({ ...c, parent: `${c.daira?.wilaya?.name} > ${c.daira?.name}` }))} slugKey="slug" />
-              <SearchSection title="المراسلين" items={(result.reporters ?? []).map((r: any) => ({ name: r.name, parent: r.commune?.name ? `${r.commune.daira.wilaya.name} > ${r.commune.name}` : null }))} noLink />
+              <div className="bg-white border border-gray-200 rounded-sm">
+                <div className="bg-navy text-white px-3 py-2">
+                  <h3 className="text-xs font-bold">الولايات ({(result.wilayas ?? []).length})</h3>
+                </div>
+                <div className="p-2 space-y-1 max-h-60 overflow-y-auto">
+                  {(result.wilayas ?? []).length === 0 && <p className="text-[10px] text-muted-foreground p-2">لا يوجد</p>}
+                  {(result.wilayas ?? []).map((w: WilayaItem) => (
+                    <div key={w.id} className="text-xs p-2 border-b border-gray-50 last:border-0">
+                      <p className="font-bold">{w.name}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="bg-white border border-gray-200 rounded-sm">
+                <div className="bg-navy text-white px-3 py-2">
+                  <h3 className="text-xs font-bold">الدوائر ({(result.dairas ?? []).length})</h3>
+                </div>
+                <div className="p-2 space-y-1 max-h-60 overflow-y-auto">
+                  {(result.dairas ?? []).length === 0 && <p className="text-[10px] text-muted-foreground p-2">لا يوجد</p>}
+                  {(result.dairas ?? []).map((d: DairaItem) => (
+                    <div key={d.id} className="text-xs p-2 border-b border-gray-50 last:border-0">
+                      <p className="font-bold">{d.name}</p>
+                      <p className="text-[9px] text-muted-foreground">{d.wilaya?.name}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="bg-white border border-gray-200 rounded-sm">
+                <div className="bg-navy text-white px-3 py-2">
+                  <h3 className="text-xs font-bold">البلديات ({(result.communes ?? []).length})</h3>
+                </div>
+                <div className="p-2 space-y-1 max-h-60 overflow-y-auto">
+                  {(result.communes ?? []).length === 0 && <p className="text-[10px] text-muted-foreground p-2">لا يوجد</p>}
+                  {(result.communes ?? []).map((c: CommuneItem) => (
+                    <div key={c.id} className="text-xs p-2 border-b border-gray-50 last:border-0">
+                      <p className="font-bold">{c.name}</p>
+                      <p className="text-[9px] text-muted-foreground">{c.daira?.wilaya?.name} &gt; {c.daira?.name}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="bg-white border border-gray-200 rounded-sm">
+                <div className="bg-navy text-white px-3 py-2">
+                  <h3 className="text-xs font-bold">المراسلين ({(result.reporters ?? []).length})</h3>
+                </div>
+                <div className="p-2 space-y-1 max-h-60 overflow-y-auto">
+                  {(result.reporters ?? []).length === 0 && <p className="text-[10px] text-muted-foreground p-2">لا يوجد</p>}
+                  {(result.reporters ?? []).map((rep: ReporterItem) => (
+                    <div key={rep.id} className="text-xs p-2 border-b border-gray-50 last:border-0">
+                      <p className="font-bold">{rep.name}</p>
+                      {rep.commune && <p className="text-[9px] text-muted-foreground">{rep.commune.daira.wilaya.name} &gt; {rep.commune.name}</p>}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 
@@ -162,10 +227,10 @@ export default function GeographicSearchPage() {
             <div className="bg-white border border-gray-200 rounded-sm p-4">
               <h2 className="text-sm font-bold text-navy mb-3">جميع الولايات</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                {result.wilayas?.map((w: any) => (
+                {(result.wilayas ?? []).map((w: WilayaItem) => (
                   <button
                     key={w.id}
-                    onClick={() => { setWilaya(w.slug); search({ wilaya: w.slug }); }}
+                    onClick={() => selectWilaya(w.slug)}
                     className="border border-gray-200 rounded-sm p-3 text-xs text-right hover:bg-gray-50"
                   >
                     <p className="font-bold">{w.name}</p>
@@ -177,25 +242,6 @@ export default function GeographicSearchPage() {
           )}
         </div>
       )}
-    </div>
-  );
-}
-
-function SearchSection({ title, items, slugKey, noLink }: { title: string; items: any[]; slugKey?: string; noLink?: boolean }) {
-  return (
-    <div className="bg-white border border-gray-200 rounded-sm">
-      <div className="bg-navy text-white px-3 py-2">
-        <h3 className="text-xs font-bold">{title} ({items.length})</h3>
-      </div>
-      <div className="p-2 space-y-1 max-h-60 overflow-y-auto">
-        {items.length === 0 && <p className="text-[10px] text-muted-foreground p-2">لا يوجد</p>}
-        {items.map((item: any, i: number) => (
-          <div key={item.id ?? i} className="text-xs p-2 border-b border-gray-50 last:border-0">
-            <p className="font-bold">{item.name}</p>
-            {item.parent && <p className="text-[9px] text-muted-foreground">{item.parent}</p>}
-          </div>
-        ))}
-      </div>
     </div>
   );
 }

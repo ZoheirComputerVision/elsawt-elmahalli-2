@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getSevenDaysAgo } from "@/lib/date-utils";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,7 @@ const badges: Record<string, { label: string; color: string }> = {
 };
 
 export default async function CoverageScorePage() {
-  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const sevenDaysAgo = getSevenDaysAgo();
 
   const dairas = await prisma.daira.findMany({
     include: {

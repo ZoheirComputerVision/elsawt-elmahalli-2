@@ -9,8 +9,6 @@ export async function GET(request: NextRequest) {
     const communeSlug = searchParams.get("commune");
     const q = searchParams.get("q");
 
-    const where: any = {};
-
     if (communeSlug) {
       const commune = await prisma.commune.findFirst({
         where: { slug: communeSlug, daira: dairaSlug ? { slug: dairaSlug } : undefined },

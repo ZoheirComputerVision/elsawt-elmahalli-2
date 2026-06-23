@@ -58,7 +58,6 @@ export default async function AdminCoveragePage() {
               {wilaya.dairas.map((daira) => {
                 const dairaNews = daira.communes.reduce((s, c) => s + c._count.news, 0);
                 const dairaReporters = daira.communes.reduce((s, c) => s + c._count.reporters, 0);
-                const dairaCovered = daira.communes.filter((c) => c._count.reporters > 0).length;
 
                 return (
                   <div key={daira.id} className="border-b border-gray-100 last:border-0">

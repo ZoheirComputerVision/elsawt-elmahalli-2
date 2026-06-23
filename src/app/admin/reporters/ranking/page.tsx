@@ -35,9 +35,9 @@ export default async function ReporterRankingPage() {
       <h1 className="text-xl font-bold text-navy mb-6">ترتيب المراسلين</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <RankTable title="الأكثر نشراً" reporters={byNews.slice(0, 15)} metric="publishedNews" metricLabel="خبر" />
+        <RankTable title="الأكثر نشراً" rows={byNews.slice(0, 15).map((r) => ({ name: r.name, commune: r.commune, wilaya: r.wilaya, value: r.publishedNews }))} metricLabel="خبر" />
 
-        <RankTable title="الأكثر نشاطاً مؤخراً" reporters={byRecent.slice(0, 15)} metric="lastLoginAt" metricLabel="آخر دخول" date />
+        <RankTable title="الأكثر نشاطاً مؤخراً" rows={byRecent.slice(0, 15).map((r) => ({ name: r.name, commune: r.commune, wilaya: r.wilaya, value: fmtDate(r.lastLoginAt) }))} metricLabel="آخر دخول" />
 
         <div className="lg:col-span-2">
           <div className="bg-white border border-gray-200 rounded-sm overflow-hidden">
@@ -70,8 +70,10 @@ export default async function ReporterRankingPage() {
   );
 }
 
-function RankTable({ title, reporters, metric, metricLabel, date }: {
-  title: string; reporters: any[]; metric: string; metricLabel: string; date?: boolean;
+type RankRow = { name: string; commune: string | null; wilaya: string | null; value: string | number };
+
+function RankTable({ title, rows, metricLabel }: {
+  title: string; rows: RankRow[]; metricLabel: string;
 }) {
   return (
     <div className="bg-white border border-gray-200 rounded-sm overflow-hidden">
@@ -88,14 +90,12 @@ function RankTable({ title, reporters, metric, metricLabel, date }: {
           </tr>
         </thead>
         <tbody>
-          {reporters.map((r, i) => (
+          {rows.map((r, i) => (
             <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
               <td className="p-2 text-center font-bold text-muted-foreground">{i + 1}</td>
-              <td className="p-2">{r.avatar && <span className="text-xs mr-1">{r.avatar}</span>}{r.name}</td>
+              <td className="p-2">{r.name}</td>
               <td className="p-2 text-muted-foreground">{r.commune && `${r.wilaya} > ${r.commune}`}</td>
-              <td className="p-2 text-center font-bold">
-                {date ? fmtDate(r[metric]) : r[metric]}
-              </td>
+              <td className="p-2 text-center font-bold">{r.value}</td>
             </tr>
           ))}
         </tbody>
