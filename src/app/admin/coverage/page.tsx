@@ -59,7 +59,6 @@ export default async function AdminCoveragePage() {
                 const dairaNews = daira.communes.reduce((s, c) => s + c._count.news, 0);
                 const dairaReporters = daira.communes.reduce((s, c) => s + c._count.reporters, 0);
                 const dairaCovered = daira.communes.filter((c) => c._count.reporters > 0).length;
-                const dairaPct = daira.communes.length > 0 ? Math.round((dairaCovered / daira.communes.length) * 100) : 0;
 
                 return (
                   <div key={daira.id} className="border-b border-gray-100 last:border-0">
@@ -71,12 +70,11 @@ export default async function AdminCoveragePage() {
                       {daira.communes.map((commune) => {
                         const hasReporter = commune._count.reporters > 0;
                         const hasNews = commune._count.news > 0;
-                        const hasDir = commune._count.directories > 0;
                         return (
                           <div
                             key={commune.id}
                             className={`text-[9px] text-center p-1 rounded-sm ${hasReporter ? "bg-green-100 text-green-800" : hasNews ? "bg-amber-100 text-amber-800" : "bg-gray-100 text-gray-400"}`}
-                            title={`${commune.name}: ${commune._count.reporters} مراسلين, ${commune._count.news} أخبار, ${commune._count.directories} دليل`}
+                            title={`${commune.name}: ${commune._count.reporters} مراسلين, ${commune._count.news} أخبار`}
                           >
                             <span className="block truncate font-semibold">{commune.name}</span>
                             <span>{commune._count.news}خ | {commune._count.reporters}م</span>

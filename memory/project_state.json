@@ -1,6 +1,6 @@
 {
-  "version": "1.2.0",
-  "phase": "PRODUCTION_READINESS",
+  "version": "1.3.2",
+  "phase": "GEOGRAPHIC_INTELLIGENCE_FOUNDATION",
   "completed_modules": [
     "PROJECT_FOUNDATION",
     "TECHNICAL_SCAFFOLD",
@@ -43,35 +43,21 @@
     "SECURITY_DOCS_UPDATE",
     "OPENGRAPH_TWITTER_CARDS",
     "RSS_NAME_FIX",
-    "PERFORMANCE_REVIEW_REPORT"
+    "PERFORMANCE_REVIEW_REPORT",
+    "NEWSLETTER_CONTACT",
+    "AD_ANALYTICS",
+    "RUNTIME_RECOVERY_V2",
+    "COVERAGE_DASHBOARD",
+    "GEOGRAPHIC_ANALYTICS",
+    "REPORTERS_PUBLIC_PAGE",
+    "ADMIN_REPORTERS_PAGE"
   ],
-  "pending_modules": ["SUPABASE_STORAGE", "PUBLIC_DIRECTORY_ADS_FRONTEND", "E2E_TESTS"],
-  "last_updated": "2026-06-22T23:59:00.000Z",
+  "pending_modules": ["SUPABASE_STORAGE", "SMTP_SETUP", "E2E_TESTS", "COVERAGE_SCORE", "COVERAGE_GAPS", "REPORTER_RANKING", "GEOGRAPHIC_SEARCH"],
+  "last_updated": "2026-06-23T12:00:00.000Z",
   "database_status": "HEALTHY",
-  "build_status": "✅ Passing (31s, TypeScript clean, 50 routes)",
-  "recent_fixes": {
-    "date": "2026-06-22",
-    "issue": "Error boundary + Logger runtime crash loop",
-    "root_cause": "error.tsx called logger.error() which threw at this.log() due to missing crypto global in certain runtimes or this binding loss in production bundle",
-    "fix": [
-      "Removed logger import from error.tsx — replaced with console.error(error)",
-      "Added try/catch around Logger constructor (crypto.randomUUID fallback)",
-      "Added try/catch around Logger.log() — never throws, falls back to raw console",
-      "Added development-mode error details (<pre>{error.stack}</pre>) in error.tsx"
-    ],
-    "reports": ["reports/runtime_exception_root_cause.md"]
-  },
-  "tech_stack": {
-    "framework": "Next.js 16",
-    "language": "TypeScript",
-    "database": "PostgreSQL",
-    "orm": "Prisma",
-    "auth": "Auth.js",
-    "css": "TailwindCSS",
-    "ui": "shadcn/ui",
-    "storage": "Local filesystem (public/uploads/)",
-    "hosting": "HostingGuru"
-  },
+  "build_status": "✅ Passing (50 routes, TypeScript clean)",
+  "sprint": "Sprint 2.2 — Geographic Intelligence: Coverage Score, Gaps, Reporter Ranking, Geographic Search",
+  "readiness": "89%",
   "brand": {
     "name_ar": "الصوت المحلي",
     "name_en": "The Local Echo",
@@ -83,39 +69,8 @@
     "type": "Wilaya → Daira → Commune → Correspondent",
     "phases": {
       "0": { "name": "التجهيز", "timeline": "الأسبوع 1–2", "scope": "تيارت (المقر)", "status": "✅ مكتمل" },
-      "1": { "name": "الشق الأول", "timeline": "الشهر 1–3", "scope": "تيارت · السوقر · قصر الشلالة", "status": "🔴 قيد التنفيذ" },
-      "2": { "name": "التغطية الكاملة", "timeline": "الشهر 4–6", "scope": "جميع دوائر ولاية تيارت", "status": "📝 مخطط" },
-      "3": { "name": "التوسع التاريخي", "timeline": "الشهر 7–9", "scope": "ولاية تيسمسيلت", "status": "📝 مخطط" },
-      "4": { "name": "التوسع الغربي", "timeline": "الشهر 10–12", "scope": "ولاية سعيدة", "status": "📝 مخطط" },
-      "5": { "name": "الهضاب والجنوب", "timeline": "السنة 2", "scope": "الأغواط · البيض · النعامة", "status": "📝 مخطط" },
-      "6": { "name": "الامتياز الوطني", "timeline": "السنة 3", "scope": "وطني", "status": "📝 مخطط" }
+      "1": { "name": "الشق الأول", "timeline": "الشهر 1–3", "scope": "تيارت · السوقر · قصر الشلالة", "status": "🟡 قيد التنفيذ" },
+      "2": { "name": "التغطية الكاملة", "timeline": "الشهر 4–6", "scope": "جميع دوائر ولاية تيارت", "status": "📝 مخطط" }
     }
-  },
-  "coverage_areas": [
-    "ولاية تيارت",
-    "ولاية منتدبة قصر الشلالة",
-    "دائرة السوقر",
-    "دائرة فرندة",
-    "دائرة عين كرمس",
-    "دائرة مهدية",
-    "دائرة دحموني",
-    "دائرة مشرع الصفا"
-  ],
-  "sprint_1_9_progress": {
-    "geographic_layer": "✅ Wilaya/Daira/Commune Prisma models, seed, API, admin CRUD, dashboard",
-    "ksar_chellala_fix": "✅ قصر الشلالة corrected to ولاية منتدبة (removed from Tiaret dairas)",
-    "rate_limiting": "✅ Applied to news, search, directory, ads, media, auth, geographic routes",
-    "health_endpoint": "✅ GET /api/health — DB, Prisma, Storage, App status",
-    "backup_script": "✅ scripts/backup-db.ts — pg_dump with 30-day rotation",
-    "env_validation": "✅ src/lib/env.ts — validateEnv() with required vars check",
-    "error_handler": "✅ src/lib/errors.ts — AppError, AuthError, ForbiddenError, NotFoundError, ValidationError, handlePrismaError",
-    "logger_audit": "✅ Added AUDIT level to src/lib/logger.ts",
-    "security_docs": "✅ docs/security.md rewritten for actual Next.js 16 + Prisma + Auth.js stack",
-    "opengraph_cards": "✅ Open Graph + Twitter Cards added to layout.tsx metadata",
-    "rss_name_fix": "✅ RSS site name fixed: صوت المحلة → الصوت المحلي",
-    "production_readiness": "✅ reports/production_readiness_report.md updated — 83% overall",
-    "security_audit": "✅ reports/security_audit_report.md updated — Rate Limiting marked ✅",
-    "performance_review": "✅ reports/performance_review_report.md created — 87% performance rating",
-    "build": "⏳ pending verification"
   }
 }

@@ -39,6 +39,18 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Link href="/admin/coverage" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
             التغطية
           </Link>
+          <Link href="/admin/coverage/score" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
+            مؤشر التغطية
+          </Link>
+          <Link href="/admin/coverage/gaps" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
+            الثغرات
+          </Link>
+          <Link href="/admin/reporters/ranking" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
+            ترتيب المراسلين
+          </Link>
+          <Link href="/admin/geographic/search" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
+            بحث جغرافي
+          </Link>
           <Link href="/news" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
             الأخبار
           </Link>
