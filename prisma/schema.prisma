@@ -108,6 +108,7 @@ model News {
   tags  NewsTag[]
   assignments    Assignment[]
   breakingNews   BreakingNews[]
+  socialPosts    SocialPost[]
 
   @@map("news")
 }
@@ -180,6 +181,8 @@ model User {
   assignmentComments    AssignmentComment[]
   assignmentAttachments AssignmentAttachment[]
   breakingNews          BreakingNews[]
+  socialAccounts        SocialAccount[]
+  socialPosts           SocialPost[]
 
   @@map("users")
 }
@@ -375,4 +378,46 @@ model BreakingNews {
   news   News?   @relation(fields: [newsId], references: [id], onDelete: SetNull)
 
   @@map("breaking_news")
+}
+
+model SocialAccount {
+  id            String   @id @default(cuid())
+  platform      String   // facebook, twitter
+  name          String
+  pageId        String?  @map("page_id")
+  pageName      String?  @map("page_name")
+  username      String?
+  accessToken   String   @map("access_token")
+  tokenExpiresAt DateTime? @map("token_expires_at")
+  isActive      Boolean  @default(true)
+  autoPost      Boolean  @default(false)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  createdById String @map("created_by_id")
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  posts SocialPost[]
+
+  @@map("social_accounts")
+}
+
+model SocialPost {
+  id        String   @id @default(cuid())
+  platform  String   // facebook, twitter
+  status    String   @default("pending") // pending, posted, failed
+  message   String
+  postUrl   String?  @map("post_url")
+  error     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  postedAt  DateTime? @map("posted_at")
+
+  newsId    String?        @map("news_id")
+  news      News?          @relation(fields: [newsId], references: [id], onDelete: SetNull)
+  accountId String?        @map("account_id")
+  account   SocialAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  createdById String?      @map("created_by_id")
+  createdBy   User?        @relation(fields: [createdById], references: [id])
+
+  @@map("social_posts")
 }

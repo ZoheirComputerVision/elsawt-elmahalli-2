@@ -4,6 +4,7 @@ import { ok, notFound, badRequest, serverError, unauthorized, forbidden } from "
 import { UpdateNewsSchema } from "@/features/news/schemas";
 import { requireRole } from "@/features/auth";
 import { prisma } from "@/lib/prisma";
+import { postToSocial } from "@/lib/social";
 
 export async function GET(
   _request: NextRequest,
@@ -91,6 +92,31 @@ export async function PUT(
         userId: actingUser.id,
       },
     });
+
+    if (isStatusChange && newStatus === "published") {
+      const slugToUse = data.slug ?? slug;
+      const newsUrl = `${process.env.NEXTAUTH_URL ?? "https://school-news-ai-209c.apps.hostingguru.io"}/news/${slugToUse}`;
+      const socialAccounts = await prisma.socialAccount.findMany({ where: { isActive: true, autoPost: true } });
+
+      for (const acc of socialAccounts) {
+        const msg = `${data.title}\n${data.summary ?? ""}`.trim();
+        const result = await postToSocial(acc.platform, acc.accessToken, acc.pageId ?? undefined, msg, newsUrl);
+
+        await prisma.socialPost.create({
+          data: {
+            platform: acc.platform,
+            status: result.success ? "posted" : "failed",
+            message: msg,
+            postUrl: result.postUrl ?? null,
+            error: result.error ?? null,
+            newsId: data.id,
+            accountId: acc.id,
+            createdById: actingUser.id,
+            postedAt: result.success ? new Date() : null,
+          },
+        });
+      }
+    }
 
     return ok(data);
   } catch (error) {
