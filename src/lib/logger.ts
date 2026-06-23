@@ -12,37 +12,46 @@ class Logger {
   private requestId: string;
 
   constructor() {
-    this.requestId = crypto.randomUUID?.() ?? Date.now().toString(36);
+    try {
+      this.requestId = crypto.randomUUID?.() ?? Date.now().toString(36);
+    } catch {
+      this.requestId = Date.now().toString(36);
+    }
   }
 
   private log(level: LogLevel, message: string, data?: unknown) {
-    const entry: LogEntry = {
-      level,
-      message,
-      data: data ?? undefined,
-      timestamp: new Date().toISOString(),
-      requestId: this.requestId,
-    };
+    try {
+      const entry: LogEntry = {
+        level,
+        message,
+        data: data ?? undefined,
+        timestamp: new Date().toISOString(),
+        requestId: this.requestId,
+      };
 
-    const prefix = `[${entry.timestamp}] [${level.toUpperCase()}]`;
+      const prefix = `[${entry.timestamp}] [${level.toUpperCase()}]`;
 
-    switch (level) {
-      case "error":
-        console.error(prefix, message, data ?? "");
-        break;
-      case "warn":
-        console.warn(prefix, message, data ?? "");
-        break;
-      case "audit":
-        console.log(`[AUDIT]`, prefix, message, data ?? "");
-        break;
-      case "debug":
-        if (process.env.NODE_ENV !== "production") {
-          console.debug(prefix, message, data ?? "");
-        }
-        break;
-      default:
-        console.log(prefix, message, data ?? "");
+      switch (level) {
+        case "error":
+          console.error(prefix, message, data ?? "");
+          break;
+        case "warn":
+          console.warn(prefix, message, data ?? "");
+          break;
+        case "audit":
+          console.log(`[AUDIT]`, prefix, message, data ?? "");
+          break;
+        case "debug":
+          if (process.env.NODE_ENV !== "production") {
+            console.debug(prefix, message, data ?? "");
+          }
+          break;
+        default:
+          console.log(prefix, message, data ?? "");
+      }
+    } catch {
+      // Logger must never throw — fallback to raw console
+      try { console.error(message, data); } catch { /* last resort */ }
     }
   }
 

@@ -36,6 +36,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Link href="/admin/workspace" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
             مساحة العمل
           </Link>
+          <Link href="/admin/coverage" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
+            التغطية
+          </Link>
           <Link href="/news" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
             الأخبار
           </Link>
@@ -59,6 +62,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </Link>
           <Link href="/admin/audit" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
             سجل التدقيق
+          </Link>
+          <Link href="/admin/reporters" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
+            المراسلون
           </Link>
           <Link href="/admin/users" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
             المستخدمون

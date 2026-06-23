@@ -46,9 +46,21 @@
     "PERFORMANCE_REVIEW_REPORT"
   ],
   "pending_modules": ["SUPABASE_STORAGE", "PUBLIC_DIRECTORY_ADS_FRONTEND", "E2E_TESTS"],
-  "last_updated": "2026-06-22T23:58:00.000Z",
+  "last_updated": "2026-06-22T23:59:00.000Z",
   "database_status": "HEALTHY",
-  "build_status": "✅ Passing (44s, TypeScript clean, 36 routes)",
+  "build_status": "✅ Passing (31s, TypeScript clean, 50 routes)",
+  "recent_fixes": {
+    "date": "2026-06-22",
+    "issue": "Error boundary + Logger runtime crash loop",
+    "root_cause": "error.tsx called logger.error() which threw at this.log() due to missing crypto global in certain runtimes or this binding loss in production bundle",
+    "fix": [
+      "Removed logger import from error.tsx — replaced with console.error(error)",
+      "Added try/catch around Logger constructor (crypto.randomUUID fallback)",
+      "Added try/catch around Logger.log() — never throws, falls back to raw console",
+      "Added development-mode error details (<pre>{error.stack}</pre>) in error.tsx"
+    ],
+    "reports": ["reports/runtime_exception_root_cause.md"]
+  },
   "tech_stack": {
     "framework": "Next.js 16",
     "language": "TypeScript",

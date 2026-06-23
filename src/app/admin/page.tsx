@@ -10,12 +10,13 @@ function fmtDate(d: Date | null | undefined): string {
 export default async function AdminDashboard() {
   const [
     totalNews, publishedCount, draftCount, reviewCount, approvedCount, archivedCount,
-    usersCount, reportersCount, editorsCount, adminsCount,
+    usersCount, reportersCount, activeReportersCount, editorsCount, adminsCount,
     categoriesCount, regionsCount, adsCount, directoryCount,
     wilayasCount, dairasCount, communesCount,
     newsletterCount, contactCount, contactUnread,
     totalAdViews, totalAdClicks,
     lastPublished,
+    newsByWilaya,
   ] = await Promise.all([
     prisma.news.count(),
     prisma.news.count({ where: { status: "published" } }),
@@ -25,6 +26,7 @@ export default async function AdminDashboard() {
     prisma.news.count({ where: { status: "archived" } }),
     prisma.user.count(),
     prisma.user.count({ where: { role: "REPORTER" } }),
+    prisma.user.count({ where: { role: "REPORTER", active: true } }),
     prisma.user.count({ where: { role: "EDITOR" } }),
     prisma.user.count({ where: { role: "ADMIN" } }),
     prisma.category.count(),
@@ -40,6 +42,19 @@ export default async function AdminDashboard() {
     prisma.ad.aggregate({ _sum: { views: true } }),
     prisma.ad.aggregate({ _sum: { clicks: true } }),
     prisma.news.findFirst({ where: { status: "published" }, orderBy: { publishedAt: "desc" }, select: { publishedAt: true } }),
+    prisma.wilaya.findMany({
+      select: {
+        name: true, slug: true,
+        _count: { select: { dairas: true } },
+        dairas: {
+          select: {
+            communes: {
+              select: { _count: { select: { news: { where: { status: "published" } }, reporters: { where: { active: true } }, directories: { where: { status: "active" } } } } },
+            },
+          },
+        },
+      },
+    }),
   ]);
 
   const totalImpressions = totalAdViews._sum.views ?? 0;
@@ -62,6 +77,7 @@ export default async function AdminDashboard() {
         <StatCard label="مؤرشف" value={archivedCount} color="text-red-500" />
         <StatCard label="المستخدمون" value={usersCount} color="text-navy" />
         <StatCard label="المراسلون" value={reportersCount} color="text-navy" />
+        <StatCard label="مراسلين نشطين" value={activeReportersCount} color="text-green-600" />
         <StatCard label="المحررون" value={editorsCount} color="text-navy" />
         <StatCard label="المديرون" value={adminsCount} color="text-navy" />
         <StatCard label="التصنيفات" value={categoriesCount} color="text-navy" />
@@ -77,6 +93,28 @@ export default async function AdminDashboard() {
         <StatCard label="مرات العرض" value={totalImpressions} color="text-blue-600" />
         <StatCard label="النقرات" value={totalClicks} color="text-green-600" />
         <StatCard label="CTR" value={`${adsCtr}%`} color="text-gold" />
+      </div>
+
+      <div className="bg-white border border-gray-200 rounded-sm p-4">
+        <h2 className="text-sm font-bold text-navy mb-4">توزيع التغطية حسب الولاية</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {newsByWilaya.map((w) => {
+            const wilayaNews = w.dairas.reduce((s, d) => s + d.communes.reduce((s2, c) => s2 + c._count.news, 0), 0);
+            const wilayaReporters = w.dairas.reduce((s, d) => s + d.communes.reduce((s2, c) => s2 + c._count.reporters, 0), 0);
+            const wilayaDir = w.dairas.reduce((s, d) => s + d.communes.reduce((s2, c) => s2 + c._count.directories, 0), 0);
+            return (
+              <div key={w.slug} className="border border-gray-200 rounded-sm p-3">
+                <p className="text-xs font-bold text-navy">{w.name}</p>
+                <div className="flex gap-3 mt-2 text-[10px] text-muted-foreground">
+                  <span>{wilayaNews} خبر</span>
+                  <span>{wilayaReporters} مراسل</span>
+                  <span>{wilayaDir} دليل</span>
+                  <span>{w._count.dairas} دوائر</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
