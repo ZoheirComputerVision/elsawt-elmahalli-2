@@ -63,6 +63,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Link href="/admin/directory" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
             الدليل الاقتصادي
           </Link>
+          <Link href="/admin/breaking-news" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
+            التنبيهات
+          </Link>
           <Link href="/admin/ads" className="text-sm text-navy hover:text-gold transition-colors shrink-0">
             الإعلانات
           </Link>

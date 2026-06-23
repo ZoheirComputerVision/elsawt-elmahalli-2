@@ -106,7 +106,8 @@ model News {
 
   media Media[]
   tags  NewsTag[]
-  assignments Assignment[]
+  assignments    Assignment[]
+  breakingNews   BreakingNews[]
 
   @@map("news")
 }
@@ -178,6 +179,7 @@ model User {
   assignmentsReceived   Assignment[] @relation("AssignmentsReceived")
   assignmentComments    AssignmentComment[]
   assignmentAttachments AssignmentAttachment[]
+  breakingNews          BreakingNews[]
 
   @@map("users")
 }
@@ -353,4 +355,24 @@ model AssignmentAttachment {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("assignment_attachments")
+}
+
+model BreakingNews {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  link      String?
+  priority  String   @default("high") // urgent, high, medium, low
+  isActive  Boolean  @default(true)
+  expiresAt DateTime? @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  createdById String @map("created_by_id")
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  newsId String? @map("news_id")
+  news   News?   @relation(fields: [newsId], references: [id], onDelete: SetNull)
+
+  @@map("breaking_news")
 }
