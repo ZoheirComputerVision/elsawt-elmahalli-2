@@ -53,6 +53,7 @@ model Commune {
   directories DirectoryEntry[]
   ads        Ad[]
   reporters  User[]
+  assignments Assignment[]
 
   @@unique([dairaId, slug])
   @@map("communes")
@@ -105,6 +106,7 @@ model News {
 
   media Media[]
   tags  NewsTag[]
+  assignments Assignment[]
 
   @@map("news")
 }
@@ -172,6 +174,10 @@ model User {
   news      News[]
   actions   AuditLog[]
   reports   Report[]
+  assignmentsGiven      Assignment[] @relation("AssignmentsGiven")
+  assignmentsReceived   Assignment[] @relation("AssignmentsReceived")
+  assignmentComments    AssignmentComment[]
+  assignmentAttachments AssignmentAttachment[]
 
   @@map("users")
 }
@@ -282,4 +288,69 @@ model AuditLog {
   user   User   @relation(fields: [userId], references: [id])
 
   @@map("audit_logs")
+}
+
+model Assignment {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  type        String   @default("news")
+  priority    String   @default("medium")
+  status      String   @default("pending")
+  dueDate     DateTime? @map("due_date")
+  location    String?
+
+  assignedById String @map("assigned_by_id")
+  assignedBy   User   @relation("AssignmentsGiven", fields: [assignedById], references: [id])
+
+  assignedToId String   @map("assigned_to_id")
+  assignedTo   User     @relation("AssignmentsReceived", fields: [assignedToId], references: [id])
+
+  communeId String?  @map("commune_id")
+  commune   Commune? @relation(fields: [communeId], references: [id])
+
+  newsId String? @map("news_id")
+  news   News?   @relation(fields: [newsId], references: [id])
+
+  comments    AssignmentComment[]
+  attachments AssignmentAttachment[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("assignments")
+}
+
+model AssignmentComment {
+  id        String   @id @default(cuid())
+  content   String
+
+  assignmentId String     @map("assignment_id")
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("assignment_comments")
+}
+
+model AssignmentAttachment {
+  id           String   @id @default(cuid())
+  filename     String
+  originalName String   @map("original_name")
+  mimeType     String   @map("mime_type")
+  size         Int
+  url          String
+
+  assignmentId String     @map("assignment_id")
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("assignment_attachments")
 }
