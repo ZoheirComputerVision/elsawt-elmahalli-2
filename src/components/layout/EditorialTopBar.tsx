@@ -15,16 +15,21 @@ function getFullDate() {
 export default async function EditorialTopBar() {
   const fullDate = getFullDate();
 
-  const liveAlerts = await prisma.breakingNews.findMany({
-    where: {
-      isActive: true,
-      OR: [{ expiresAt: null }, { expiresAt: { gte: new Date() } }],
-    },
-    orderBy: [{ priority: "asc" }, { createdAt: "desc" }],
-    take: 10,
-  });
+  let alerts: { title: string; link?: string }[] = [];
 
-  const alerts = liveAlerts.map((a) => ({ title: a.title, link: a.link ?? undefined }));
+  try {
+    const liveAlerts = await prisma.breakingNews.findMany({
+      where: {
+        isActive: true,
+        OR: [{ expiresAt: null }, { expiresAt: { gte: new Date() } }],
+      },
+      orderBy: [{ priority: "asc" }, { createdAt: "desc" }],
+      take: 10,
+    });
+    alerts = liveAlerts.map((a) => ({ title: a.title, link: a.link ?? undefined }));
+  } catch {
+    alerts = [];
+  }
 
   return (
     <div className="bg-navy text-white text-xs">
